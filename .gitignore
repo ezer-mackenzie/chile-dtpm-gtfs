@@ -152,3 +152,7 @@ Thumbs.db
 temp/
 tmp/
 env.yaml
+# Quality tools and documentation artifacts
+.ruff_cache/
+/site/
+/_readthedocs/

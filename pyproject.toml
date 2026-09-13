@@ -1,7 +1,19 @@
 [project]
 name = "chile-dtpm-gtfs"
 version = "0.1.0"
-description = "Discover official DTPM GTFS publications for Santiago, Chile."
+description = "Discover, load, and export official DTPM GTFS data for Santiago, Chile."
+license = "MIT"
+license-files = ["LICENSE.md"]
+keywords = ["gtfs", "chile", "dtpm", "santiago", "transit", "geojson"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+]
 readme = "README.md"
 authors = [
     { name = "Eli-ezer Reuven Ramirez Ruiz", email = "ramirez.ruiz.eliezer.reuven@gmail.com" }
@@ -14,11 +26,24 @@ dependencies = [
     "tzdata>=2025.1; sys_platform == 'win32'",
 ]
 
+[project.urls]
+Repository = "https://github.com/ezer-mackenzie/chile-dtpm-gtfs"
+Issues = "https://github.com/ezer-mackenzie/chile-dtpm-gtfs/issues"
+Documentation = "https://github.com/ezer-mackenzie/chile-dtpm-gtfs/blob/main/README.md"
+
 [project.scripts]
 chile-dtpm-gtfs = "chile_dtpm_gtfs.cli:app"
 
 [dependency-groups]
-dev = ["pytest>=8,<10", "ruff>=0.11", "mypy>=1.15"]
+dev = [
+    "pytest>=8,<10",
+    "ruff>=0.11",
+    "mypy>=1.15",
+    "pytest-cov>=6,<8",
+]
+docs = [
+    "mkdocs>=1.6,<2",
+]
 
 [tool.ruff]
 target-version = "py312"
@@ -33,7 +58,19 @@ strict = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["live: opt-in tests that download the official DTPM feed"]
 
 [build-system]
 requires = ["uv_build>=0.12.13,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv.build-backend]
+source-include = ["docs/**", "tests/**", "scripts/**", "mkdocs.yml", "uv.lock", "CHANGELOG.md", "CONTRIBUTING.md", "AGENTS.md", "CLAUDE.md", "SECURITY.md", "CODE_OF_CONDUCT.md"]
+
+[tool.coverage.run]
+source = ["chile_dtpm_gtfs"]
+relative_files = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
