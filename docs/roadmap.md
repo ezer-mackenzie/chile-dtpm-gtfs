@@ -1,28 +1,35 @@
 ﻿# Roadmap
 
-The first release milestone is 0.1.0. The package version is not a release claim.
-Complete and verify one phase before beginning the next.
+## v0.1.0: completed initial milestone
 
-1. **Publication discovery (implemented):** package bootstrap, HTTP client,
-   immutable metadata, Spanish dates, HTML parser, current resolver, offline tests,
-   documentation, and CI.
-2. **Downloads and provenance:** explicit download API, HTTP errors, streaming,
-   filename/content length, UTC download timestamp, source page, effective date,
-   URL, and SHA-256. No implicit downloads in current().
-3. **GTFS loading and validation:** from_file/from_url, required agency/stops/routes/
-   trips/stop_times files, optional tables, feed_info metadata, invalid ZIP tests,
-   and service times beyond 24 hours.
-4. **Minimal domain and Metro:** agencies, stops/stations/platforms/entrances,
-   routes, trips, shapes, and services; relationship-based selection and all shapes.
-5. **GeoJSON:** normalized-domain exporter, in-memory and file APIs, WGS84
-   longitude/latitude, fixture-based acceptance tests.
-6. **CLI and release readiness:** Typer commands publications/current/download,
-   documentation of the complete working pipeline, packaging and release checks.
+1. Publication discovery: official HTTP index, immutable metadata, Spanish dates,
+   actual ZIP hrefs, current resolver, source exceptions, and offline HTML tests.
+2. Downloads: streaming, explicit destination behavior, HTTP errors, byte limits,
+   timestamps, source/resolved URLs, original filename, Content-Length, and SHA-256.
+3. GTFS: local/URL entry points, archive/header checks, streaming required/optional
+   tables, independent feed_info metadata, service times, and basic validation.
+4. Domain and Metro: typed immutable records, relationship-based selection,
+   station hierarchy, all shapes, and calendar exception-aware service filtering.
+5. GeoJSON: normalized-domain exporter, in-memory/file APIs, WGS84 coordinates,
+   route variants, provenance, and atomic output.
+6. CLI and release preparation: discovery/current/download/validate/export commands,
+   Python compatibility checks, packaging, CI, documentation, and release workflow.
 
-Each phase must pass pytest, Ruff lint/format, and mypy. Keep changes reviewable
-with Conventional Commits. Use Semantic Versioning and v-prefixed Git tags.
+Changes were implemented and verified in separate Conventional Commits. A local
+milestone/tag does not imply that a GitHub release or PyPI upload has occurred.
 
-Later work: calendar policy improvements, normalized JSON, TopoJSON research,
-application runtime datasets, caching, advanced pathways/levels, bus/rail subsets.
-KMP applications, APIs, databases, live positions, simulations, and machine learning
-are outside the initial library milestone.
+## Later milestones
+
+- Broader GTFS validation and larger dataset performance measurements.
+- Richer publication policy for diversions and special events.
+- Frequency expansion, advanced pathways/levels, and station routing.
+- More ergonomic bus/rail selectors with documented classification policies.
+- Optional cache layers with explicit invalidation and reproducibility controls.
+- Normalized JSON, researched TopoJSON support, and application runtime datasets.
+
+KMP applications, web APIs, databases, live positions, simulations, crowdsourcing,
+3D models, and machine learning are outside this library's initial scope.
+
+Continue one coherent feature at a time with documentation and meaningful offline
+tests. Use Semantic Versioning and v-prefixed release tags; pre-1.0 APIs may evolve
+through documented minor releases.

@@ -1,12 +1,12 @@
-﻿# Agent instructions
+# Agent instructions
 
 Build chile-dtpm-gtfs, an unofficial Python 3.12+ library specializing in official
 DTPM GTFS distribution. Read README.md, docs/architecture.md, and docs/roadmap.md
 before making changes. All code, documentation, and commit messages use English.
 Preserve Spanish source wording in metadata and test fixtures.
 
-Implement phases in order. Phase 1 is publication discovery only. Do not implement
-the entire roadmap in one change. Inspect existing files, explain substantial
+The v0.1.0 milestone is implemented. Continue the roadmap in small, ordered
+features; do not implement all future milestones in one change. Inspect existing files, explain substantial
 architecture changes, and keep increments small and tested.
 
 Separate HTTP, HTML parsing, immutable publication metadata, applicability,
@@ -15,7 +15,7 @@ a ZIP URL from a date or hardcode a current feed. current() returns metadata onl
 Use actual hrefs, explicit HTTP/parse errors, and no stale fallback. Preserve
 special-service descriptions; exclude future publications using Santiago dates.
 
-Future GTFS work must support explicit URLs and local files, SHA-256 provenance,
+Preserve GTFS support for explicit URLs and local files, SHA-256 provenance,
 optional files, times exceeding 24 hours, calendar exceptions, all shape variants,
 and relationship-based Metro selection. Never identify Metro stops by name.
 Keep publication dates separate from internal feed dates. Export from domain
@@ -24,13 +24,19 @@ models, retain WGS84 longitude/latitude, and do not beautify source geometry.
 Use uv, typed public APIs, small functions, pytest, Ruff, and strict mypy. Avoid
 unnecessary Any, wrapper classes, dependencies, or placeholder modules. HTTP uses
 httpx; HTML uses selectolax. Heavy tabular processing may use Polars when needed.
+Typer provides the CLI; MkDocs belongs only to the docs dependency group.
 No Selenium/Playwright, web frameworks, databases, or KMP application code.
 
 After each significant phase run:
-- uv run pytest
-- uv run ruff check .
-- uv run ruff format --check .
-- uv run mypy src
+
+- uv run python -m pytest
+- uv run python -m ruff check .
+- uv run python -m ruff format --check .
+- uv run python -m mypy src
+- uv run --group docs python -m mkdocs build --strict
+
+Before release, also run uv build and uv run python scripts/check_distribution.py.
+Live tests require DTPM_LIVE_TESTS=1 and are never enabled in ordinary CI.
 
 Fix failures before proceeding. Tests use local HTML and generated GTFS fixtures;
 live integration checks must be optional and separate. Update documentation with

@@ -1,35 +1,57 @@
 ﻿# Architecture
 
-The source layer is implemented as:
+The implementation separates source discovery from feed processing:
 
 ```text
-DTPM -> DTPMWebsiteClient -> HTML + final URL
-                         -> PublicationParser -> FeedPublication[]
-                         -> CurrentFeedResolver -> FeedPublication
+DTPMWebsiteClient -> PublicationParser -> FeedPublication[]
+                                       -> CurrentFeedResolver
+                                       -> FeedPublication
+FeedDownloader -> ZIP + DownloadResult -> GTFSLoader -> GTFSFeed
+GTFSFeed -> record normalization -> relationship selector -> TransitNetwork
+TransitNetwork -> exporter -> GeoJSON dictionary or file
 ```
 
-HTTP retrieval, HTML interpretation, and applicability are independent. The public
-facade orchestrates them; it contains no scraping or date-selection logic.
-The parser fails closed for incomplete advertised blocks. Ties follow page order.
+`DTPM` orchestrates discovery. `FeedPublication.download()` delegates transport and
+loading, then attaches source provenance. `GTFSFeed.from_url()` bypasses discovery;
+`from_file()` is fully offline. Parsers do not fetch or cache data. The CLI delegates
+to these APIs and contains only argument handling and output presentation.
+
+The ZIP stays on disk. Tables are UTF-8 CSV streams and are never extracted.
+Agencies, routes, trips, and stops are indexed during selection; large stop_times
+and shapes are scanned while retaining selected records. A normalized snapshot
+owns its immutable tuples and survives archive closure. Downloads without a chosen
+destination own temporary storage and expose deterministic close/context handling.
 
 ## Dependencies
 
-- httpx: synchronous HTTP, timeouts, redirects, error reporting, and mock transport.
+- httpx: HTTP, redirects, timeouts, streaming, and mock transports.
 - selectolax: lightweight HTML parsing without browser automation.
-- tzdata on Windows: IANA timezone data for America/Santiago.
-- pytest, Ruff, mypy: offline tests, formatting/linting, and strict type checking.
+- tzdata on Windows: Santiago IANA timezone data.
+- Typer: CLI argument handling and help (Rich is transitive).
+- pytest, Ruff, mypy: offline tests, formatting/linting, and strict type checks.
+- MkDocs in the optional docs group: navigable documentation, not runtime behavior.
 
-Polars, orjson, Typer, and exporters are deferred until their phase needs them.
+Standard-library CSV, ZIP, hashing, and JSON are sufficient for this first Metro
+pipeline. Polars may be introduced for measured heavy tabular needs; it does not
+shape the public API. There are no empty modules for speculative future features.
 
-## Future boundaries and invariants
+## Invariants and limits
 
-A downloader will handle streaming ZIP retrieval and provenance independently of
-HTML. A GTFS loader will support local files and explicit URLs. Domain models will
-separate GTFS parsing from exporters. Metro selection must follow routes -> trips
--> stop_times -> stops, plus parent_station/location_type, never name searches.
-Preserve all shape variants and geographic longitude/latitude coordinates. Use
-service seconds for GTFS times beyond 24 hours. Calendar exceptions must remain
-part of service applicability. Never conflate publication dates with feed_info dates.
+Never construct the current archive URL from a date. Preserve published hrefs,
+descriptions, and independent publication/internal coverage dates. current() must
+not download a ZIP or activate a future publication.
 
-The library represents the entire DTPM feed. Metro is its first planned subset.
-No GTFS processing, downloader, or empty future module is shipped in phase 1.
+Select Metro through GTFS relationships and retain parent station/location type.
+Do not group stops by name or invent missing stations. Preserve every selected
+shape variant and original WGS84 points. Store times as service seconds and apply
+calendar exceptions before weekly rules. Frequency trips are not expanded in 0.1.0.
+
+Basic validation covers archive structure, CSV streams, integrity and time syntax;
+normalization checks supported values and selected relationships. Full standard
+validation and advanced station routing remain separate future work. Optional
+advanced tables stay available as raw records.
+
+Exporters consume only domain snapshots. GeoJSON includes provenance, all selected
+locations, and every route/shape pair. Missing geometry is explicit. No presentation
+smoothing is applied. Cache layers, other modes, and other exporters can be added
+without changing discovery or coupling exporters to GTFS CSV parsing.

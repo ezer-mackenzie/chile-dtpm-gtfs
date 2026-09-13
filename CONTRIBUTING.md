@@ -1,8 +1,8 @@
-﻿# Contributing
+# Contributing
 
 Use Python 3.12+ and uv. Run `uv sync`, then `uv run pytest`, `uv run ruff check .`,
 `uv run ruff format --check .`, and `uv run mypy src` before submitting a change.
-Use `uv run ruff format .` to format code. CI covers Python 3.12 and 3.14 on Linux
+Use `uv run ruff format .` to format code. CI covers Python 3.12, 3.13, and 3.14 on Linux
 and Windows. Write code, docstrings, documentation, and commit messages in English;
 Spanish official source text belongs in fixtures and preserved metadata.
 
@@ -26,3 +26,8 @@ ci: check supported Python versions on Linux and Windows
 docs: document discovery usage and the implementation roadmap
 chore(repo): configure ignore patterns and line endings
 ```
+
+Documentation uses MkDocs: run `uv run --group docs python -m mkdocs build --strict`.
+Before a release, run `uv build` and `uv run python scripts/check_distribution.py`.
+See [testing](docs/testing.md) and [release preparation](docs/releasing.md) for
+opt-in live tests and external publishing prerequisites.
