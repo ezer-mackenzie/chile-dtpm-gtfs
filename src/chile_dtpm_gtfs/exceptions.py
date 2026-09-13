@@ -1,0 +1,17 @@
+"""Public errors raised by the library."""
+
+
+class DTPMError(Exception):
+    """Base exception for library failures."""
+
+
+class DTPMSourceError(DTPMError):
+    """The publication page could not be retrieved."""
+
+
+class DTPMSourceParseError(DTPMError):
+    """The publication page contains missing or invalid metadata."""
+
+
+class NoCurrentPublicationError(DTPMError):
+    """No discovered publication applies on the requested date."""
