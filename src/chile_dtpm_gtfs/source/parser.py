@@ -39,6 +39,7 @@ class PublicationParser:
             publications.append(
                 FeedPublication(
                     title=title,
+                    source_page=source_url,
                     effective_from=parse_spanish_date(date_text),
                     download_url=url,
                     filename=unquote(urlsplit(url).path.rsplit("/", 1)[-1]),
