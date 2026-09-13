@@ -58,7 +58,7 @@ class GTFSLoader:
 
     def __init__(self, path: str | Path, *, max_uncompressed_bytes: int = 8 * 1024**3) -> None:
         """Index root tables or tables under one common wrapper directory."""
-        self.path = Path(path)
+        self.path = Path(path).absolute()
         self.members: dict[str, str] = {}
         try:
             with ZipFile(self.path) as archive:

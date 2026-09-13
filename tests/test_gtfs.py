@@ -137,3 +137,16 @@ def test_service_times(value: str, expected: int) -> None:
 def test_invalid_service_times(value: str) -> None:
     with pytest.raises(InvalidGTFSFeedError):
         parse_service_time(value)
+
+
+def test_relative_path_survives_working_directory_change(
+    tmp_path: Path,
+    archive_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(archive_path.parent)
+    with GTFSFeed.from_file(archive_path.name) as feed:
+        other = tmp_path / "other"
+        other.mkdir()
+        monkeypatch.chdir(other)
+        assert len(list(feed.rows("routes.txt"))) == 2

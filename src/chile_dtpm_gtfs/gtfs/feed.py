@@ -2,8 +2,10 @@
 
 import hashlib
 from collections.abc import Iterator
+from contextlib import closing
 from dataclasses import replace
 from datetime import date
+from itertools import islice
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import TracebackType
@@ -57,7 +59,8 @@ class GTFSFeed:
             original_filename=loader.path.name,
             size_bytes=loader.path.stat().st_size,
         )
-        info = list(loader.rows("feed_info.txt"))
+        with closing(loader.rows("feed_info.txt")) as records:
+            info = list(islice(records, 2))
         if len(info) > 1:
             raise InvalidGTFSFeedError("feed_info.txt must contain at most one record.")
         if info:
