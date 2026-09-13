@@ -7,6 +7,10 @@ from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import TracebackType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from chile_dtpm_gtfs.domain.network import TransitNetwork
 
 import httpx
 
@@ -128,6 +132,17 @@ class GTFSFeed:
         """Read all records for basic CSV, integrity, and service-time validation."""
         self._ensure_open()
         return GTFSValidator().validate(self._loader)
+
+    def select(self, *, route_types: frozenset[int], on: date | None = None) -> "TransitNetwork":
+        """Select route types through GTFS relationships into an independent snapshot."""
+        from chile_dtpm_gtfs.selectors.metro import select_network
+
+        self._ensure_open()
+        return select_network(self, route_types=route_types, on=on)
+
+    def metro(self, *, on: date | None = None) -> "TransitNetwork":
+        """Select subway routes (route_type=1), optionally filtering a service date."""
+        return self.select(route_types=frozenset({1}), on=on)
 
     def _ensure_open(self) -> None:
         if self._closed:
