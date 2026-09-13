@@ -84,3 +84,15 @@ def test_timeout_keeps_existing_file(tmp_path: Path) -> None:
             "https://example.org/feed.zip", target, overwrite=True
         )
     assert target.read_bytes() == b"original"
+
+
+def test_filename_is_decoded_once(tmp_path: Path) -> None:
+    result = FeedDownloader(
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, content=b"payload"))
+    ).download("https://example.org/feed%3F%2520.zip", tmp_path / "feed.zip")
+    assert result.filename == "feed?%20.zip"
+
+
+def test_malformed_url_uses_download_error(tmp_path: Path) -> None:
+    with pytest.raises(FeedDownloadError):
+        FeedDownloader().download("https://example.org:invalid/feed.zip", tmp_path / "feed.zip")

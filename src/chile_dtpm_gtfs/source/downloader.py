@@ -100,7 +100,7 @@ class FeedDownloader:
                     path=target,
                     source_url=url,
                     resolved_url=str(response.url),
-                    filename=unquote(urlsplit(response.url.path).path.rsplit("/", 1)[-1])
+                    filename=unquote(urlsplit(str(response.url)).path.rsplit("/", 1)[-1])
                     or target.name,
                     downloaded_at=datetime.now(UTC),
                     sha256=digest.hexdigest(),
@@ -113,7 +113,7 @@ class FeedDownloader:
                 # Same-directory hard link atomically fails if the target exists.
                 os.link(temporary, target)
             return result
-        except (httpx.HTTPError, OSError, ValueError) as exc:
+        except (httpx.HTTPError, httpx.InvalidURL, OSError, ValueError) as exc:
             raise FeedDownloadError(f"Unable to download {url!r}: {exc}") from exc
         finally:
             if temporary is not None:
