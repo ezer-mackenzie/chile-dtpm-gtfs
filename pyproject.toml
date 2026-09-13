@@ -7,7 +7,15 @@ authors = [
     { name = "Eli-ezer Reuven Ramirez Ruiz", email = "ramirez.ruiz.eliezer.reuven@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = ["httpx>=0.28,<1", "selectolax>=0.3.27,<0.5", "tzdata>=2025.1; sys_platform == 'win32'"]
+dependencies = [
+    "httpx>=0.28,<1",
+    "selectolax>=0.3.27,<0.5",
+    "typer>=0.16,<1",
+    "tzdata>=2025.1; sys_platform == 'win32'",
+]
+
+[project.scripts]
+chile-dtpm-gtfs = "chile_dtpm_gtfs.cli:app"
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.11", "mypy>=1.15"]
