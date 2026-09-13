@@ -53,7 +53,7 @@ jobs:
       - run: uv run --group docs python -m mkdocs build --strict
       - run: uv build
       - run: uv run python scripts/check_distribution.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: python-package-distributions
           path: dist/
