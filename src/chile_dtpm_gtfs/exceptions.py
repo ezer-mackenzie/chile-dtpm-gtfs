@@ -23,3 +23,7 @@ class FeedDownloadError(DTPMError):
 
 class InvalidGTFSFeedError(DTPMError):
     """An archive or supported GTFS record is invalid."""
+
+
+class FeedExportError(DTPMError):
+    """A normalized dataset could not be exported."""
