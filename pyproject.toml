@@ -1,16 +1,30 @@
 [project]
 name = "chile-dtpm-gtfs"
 version = "0.1.0"
-description = ""
+description = "Discover official DTPM GTFS publications for Santiago, Chile."
 readme = "README.md"
 authors = [
     { name = "Eli-ezer Reuven Ramirez Ruiz", email = "ramirez.ruiz.eliezer.reuven@gmail.com" }
 ]
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.12"
+dependencies = ["httpx>=0.28,<1", "selectolax>=0.3.27,<0.5", "tzdata>=2025.1; sys_platform == 'win32'"]
 
-[project.scripts]
-chile-dtpm-gtfs = "chile_dtpm_gtfs:main"
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11", "mypy>=1.15"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [build-system]
 requires = ["uv_build>=0.12.13,<0.13.0"]
