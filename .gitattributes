@@ -1,0 +1,40 @@
+# Set default behavior to automatically normalize line endings
+# for all files to LF on checkout and commit
+* text=auto eol=lf
+
+# Python source files
+*.py      text diff=python
+*.py3     text diff=python
+*.pyw     text diff=python
+*.pyi     text diff=python
+*.pxd     text diff=python
+*.pyx     text diff=python
+
+# Jupyter Notebooks
+*.ipynb   text eol=lf
+
+# Documentation and config files
+*.md      text
+*.rst     text
+*.txt     text
+*.json    text
+*.yml     text
+*.yaml    text
+*.toml    text
+*.ini     text
+
+# Compiled/binary Python files (ignore in exports/archives)
+*.pyc     binary export-ignore
+*.pyo     binary export-ignore
+*.pyd     binary export-ignore
+*.so      binary export-ignore
+*.dll     binary export-ignore
+*.db      binary export-logo
+*.sqlite  binary
+*.pkl     binary export-ignore
+*.pickle  binary export-ignore
+
+# Lock files
+poetry.lock    merge=merge
+Pipfile.lock   merge=merge
+uv.lock        merge=merge
