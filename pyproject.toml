@@ -1,6 +1,6 @@
 [project]
 name = "chile-dtpm-gtfs"
-version = "0.1.0"
+version = "0.4.0"
 description = "Discover, load, and export official DTPM GTFS data for Santiago, Chile."
 license = "MIT"
 license-files = ["LICENSE.md"]
