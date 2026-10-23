@@ -2,6 +2,7 @@
 
 import json
 from datetime import date
+from importlib.metadata import version as package_version
 from pathlib import Path
 
 import pytest
@@ -19,7 +20,7 @@ def test_help_and_version() -> None:
     assert runner.invoke(app, ["--help"]).exit_code == 0
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
-    assert result.stdout.strip() == "0.1.0"
+    assert result.stdout.strip() == package_version("chile-dtpm-gtfs")
 
 
 def test_discovery_commands(monkeypatch: pytest.MonkeyPatch) -> None:
