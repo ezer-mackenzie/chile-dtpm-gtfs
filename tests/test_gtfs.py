@@ -21,7 +21,9 @@ def test_local_feed(archive_path: Path) -> None:
         assert feed.metadata.source_url is None
         assert feed.metadata.feed_version == "test-version"
         assert feed.metadata.feed_start_date == date(2026, 1, 1)
-        assert feed.validate().row_counts["stop_times.txt"] == 5
+        report = feed.validate()
+        assert report.valid
+        assert report.row_counts["stop_times.txt"] == 5
     assert archive_path.exists()
     with pytest.raises(InvalidGTFSFeedError, match="closed"):
         list(feed.rows("stops.txt"))
@@ -122,8 +124,123 @@ def test_archive_changed(archive_path: Path) -> None:
 def test_validation_checks_later_records(tmp_path: Path, tables: dict[str, str]) -> None:
     tables["stop_times.txt"] += "T,25:99:00,26:00:00,Q,3\n"
     with GTFSFeed.from_file(write_archive(tmp_path / "invalid.zip", tables)) as feed:
-        with pytest.raises(InvalidGTFSFeedError, match="service time"):
-            feed.validate()
+        report = feed.validate()
+        assert not report.valid
+        issue = next(issue for issue in report.issues if issue.code == "invalid_service_time")
+        assert issue.table == "stop_times.txt"
+        assert issue.record_number == 7
+
+
+def test_validation_reports_values_and_relationships(
+    tmp_path: Path, tables: dict[str, str]
+) -> None:
+    tables["routes.txt"] += "UNKNOWN,M,Invalid,Invalid route,99,\n"
+    tables["trips.txt"] += "MISSING,WK,UNKNOWN_TRIP,,MISSING_SHAPE\n"
+    tables["stop_times.txt"] += "UNKNOWN_TRIP,06:00:00,06:00:00,MISSING_STOP,1\n"
+    tables["stops.txt"] += "ORPHAN,Orphan,-33.0,181.0,0,MISSING_PARENT\n"
+    with GTFSFeed.from_file(write_archive(tmp_path / "invalid.zip", tables)) as feed:
+        report = feed.validate()
+
+    codes = {issue.code for issue in report.issues}
+    assert {
+        "invalid_route_type",
+        "unknown_reference",
+        "coordinate_out_of_range",
+    } <= codes
+    route_reference = next(
+        issue
+        for issue in report.issues
+        if issue.table == "trips.txt" and "route_id" in issue.message
+    )
+    assert route_reference.record_number == 5
+
+
+@pytest.mark.parametrize("route_type", [0, 7, 11, 12, 100, 1799])
+def test_validation_accepts_standard_and_extended_route_types(
+    tmp_path: Path, tables: dict[str, str], route_type: int
+) -> None:
+    tables["routes.txt"] = tables["routes.txt"].replace(",3,\n", f",{route_type},\n")
+    with GTFSFeed.from_file(write_archive(tmp_path / f"route-{route_type}.zip", tables)) as feed:
+        assert feed.validate().valid
+
+
+def test_validation_reports_common_core_record_errors(
+    tmp_path: Path, tables: dict[str, str]
+) -> None:
+    tables["agency.txt"] += ",Missing,https://example.org,America/Santiago\n"
+    tables["routes.txt"] += ",UNKNOWN,,,not-a-number,\n"
+    tables["stops.txt"] += "BAD,Stop,-91,invalid,9,MISSING\nPARTIAL,Partial,-33.0,,0,\n"
+    tables["trips.txt"] += ",,MISSING,,MISSING_SHAPE\n"
+    tables["stop_times.txt"] += ",bad,bad,MISSING,not-a-number\n"
+    tables["shapes.txt"] += ",invalid,181,not-a-number\n"
+    tables["calendar.txt"] += "WK,2,1,1,1,1,1,1,20261231,20260101\n"
+    tables["calendar_dates.txt"] += ",20260231,3\n"
+    tables["frequencies.txt"] = (
+        "trip_id,start_time,end_time,headway_secs,exact_times\n"
+        "MISSING,08:00:00,07:00:00,0,2\n"
+        "MISSING,,,,\n"
+    )
+    tables["pathways.txt"] = (
+        "pathway_id,from_stop_id,to_stop_id,pathway_mode,is_bidirectional\nP,MISSING,MISSING,1,0\n"
+    )
+    tables["transfers.txt"] = "from_stop_id,to_stop_id,transfer_type\nMISSING,MISSING,0\n"
+    tables["levels.txt"] = "level_id,level_index\n,bad\nL,inf\n"
+
+    with GTFSFeed.from_file(write_archive(tmp_path / "core-errors.zip", tables)) as feed:
+        report = feed.validate()
+
+    codes = {issue.code for issue in report.issues}
+    assert {
+        "missing_agency_id",
+        "missing_required_value",
+        "invalid_integer",
+        "missing_route_name",
+        "unknown_reference",
+        "invalid_location_type",
+        "incomplete_coordinates",
+        "invalid_coordinate",
+        "coordinate_out_of_range",
+        "invalid_service_time",
+        "invalid_weekday_flag",
+        "invalid_date",
+        "invalid_date_range",
+        "invalid_exception_type",
+        "invalid_frequency_range",
+        "integer_below_minimum",
+        "invalid_exact_times",
+        "missing_frequency_time",
+        "invalid_level_index",
+    } <= codes
+
+
+def test_validation_reports_empty_required_agency_table(
+    tmp_path: Path, tables: dict[str, str]
+) -> None:
+    tables["agency.txt"] = "agency_id,agency_name,agency_url,agency_timezone\n"
+    with GTFSFeed.from_file(write_archive(tmp_path / "empty-agency.zip", tables)) as feed:
+        report = feed.validate()
+
+    assert "empty_required_table" in {issue.code for issue in report.issues}
+
+
+def test_validation_bounds_diagnostics(tmp_path: Path, tables: dict[str, str]) -> None:
+    tables["routes.txt"] += "R,M,Duplicate,Duplicate route,99,\n" * 505
+    with GTFSFeed.from_file(write_archive(tmp_path / "many-issues.zip", tables)) as feed:
+        report = feed.validate()
+
+    assert len(report.issues) == 1000
+    assert report.diagnostics_truncated
+
+
+def test_validation_scans_large_stop_times_table(tmp_path: Path, tables: dict[str, str]) -> None:
+    tables["stop_times.txt"] += "".join(
+        f"B,08:00:00,08:00:00,B,{sequence}\n" for sequence in range(2, 3002)
+    )
+    with GTFSFeed.from_file(write_archive(tmp_path / "large-feed.zip", tables)) as feed:
+        report = feed.validate()
+
+    assert report.valid
+    assert report.row_counts["stop_times.txt"] == 3005
 
 
 @pytest.mark.parametrize(

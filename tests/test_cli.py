@@ -5,6 +5,7 @@ from datetime import date
 from pathlib import Path
 
 import pytest
+from conftest import write_archive
 from typer.testing import CliRunner
 
 from chile_dtpm_gtfs import DTPM, FeedPublication, GTFSFeed
@@ -59,13 +60,27 @@ def test_download_command(
 def test_validate_and_export(archive_path: Path, tmp_path: Path) -> None:
     result = runner.invoke(app, ["validate", str(archive_path)])
     assert result.exit_code == 0
-    assert json.loads(result.stdout)["row_counts"]["routes.txt"] == 2
+    report = json.loads(result.stdout)
+    assert report["valid"]
+    assert report["row_counts"]["routes.txt"] == 2
+    assert report["diagnostics"] == []
     output = tmp_path / "metro.geojson"
     result = runner.invoke(
         app, ["export", "metro", "--input", str(archive_path), "--output", str(output)]
     )
     assert result.exit_code == 0, result.output
     assert len(json.loads(output.read_text())["features"]) == 6
+
+
+def test_validate_reports_semantic_errors(tmp_path: Path, tables: dict[str, str]) -> None:
+    tables["routes.txt"] += "INVALID,M,Invalid,Invalid route,99,\n"
+    archive = write_archive(tmp_path / "invalid-semantics.zip", tables)
+    result = runner.invoke(app, ["validate", str(archive)])
+
+    assert result.exit_code == 1
+    report = json.loads(result.stdout)
+    assert not report["valid"]
+    assert report["diagnostics"][0]["code"] == "invalid_route_type"
 
 
 def test_errors_are_actionable(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

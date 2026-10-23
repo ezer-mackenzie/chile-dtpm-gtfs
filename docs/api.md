@@ -32,13 +32,16 @@ Spanish date. These parser/resolver operations perform no I/O.
 | `GTFSFeed.from_url(url, destination=None, timeout=60.0, max_bytes=2 * 1024**3, transport=None)` | Download and structurally load without scraping |
 | `feed.path`, `feed.tables`, `feed.metadata` | Absolute archive path, available table names, immutable metadata |
 | `feed.rows("table.txt")` | Streaming string dictionaries; absent optional tables yield no rows |
-| `feed.validate()` | `ValidationReport.row_counts` after a full basic CSV/time/integrity scan |
+| `feed.validate()` | `ValidationReport` with row counts, validity, and core GTFS diagnostics |
 | `feed.metro(on=None)` | Independent normalized snapshot for route type 1 |
 | `feed.select(route_types=frozenset({...}), on=None)` | Same pipeline for specified route types |
 | `feed.close()` | Remove owned temporary storage; preserve caller-owned files |
 
 Feeds support `with`. A local archive must remain present and unchanged while open.
 `from_file()` does not certify full standard compliance. See [GTFS](gtfs.md).
+`ValidationReport.issues` contains bounded `ValidationIssue` values with a stable
+code, table, logical record number, and message; structural ZIP/CSV errors continue
+to raise `InvalidGTFSFeedError`.
 
 `DownloadResult` fields: `path`, `source_url`, `resolved_url`, `filename`,
 `downloaded_at`, `sha256`, `size_bytes`, `content_length`.

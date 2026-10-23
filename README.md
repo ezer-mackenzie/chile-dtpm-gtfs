@@ -86,7 +86,9 @@ with GTFSFeed.from_url("https://example.org/feed.zip") as feed:
 Keep local files unchanged until the feed is closed. Loading validates required
 files, headers, and feed_info metadata without reading every large table into
 memory. `validate()` fully scans CSV records and service time syntax. This is basic
-validation, **not a complete GTFS compliance validator**.
+validation, **not a complete GTFS compliance validator**. Its report includes
+core value/reference diagnostics, and the CLI exits nonzero when such errors are
+found.
 
 ## Normalized data
 

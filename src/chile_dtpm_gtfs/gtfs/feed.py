@@ -132,7 +132,11 @@ class GTFSFeed:
         yield from self._loader.rows(table)
 
     def validate(self) -> ValidationReport:
-        """Read all records for basic CSV, integrity, and service-time validation."""
+        """Read all records and return core GTFS diagnostics and row counts.
+
+        ZIP, CSV, and archive integrity failures raise InvalidGTFSFeedError.
+        Core record-value and reference errors are returned in the report.
+        """
         self._ensure_open()
         return GTFSValidator().validate(self._loader)
 

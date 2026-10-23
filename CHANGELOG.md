@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-No changes yet.
+### Added
+
+- Core GTFS validation diagnostics for common field, identifier, calendar, time,
+  coordinate, and relationship errors, while retaining structural exceptions.
+- Validation report status and bounded diagnostics in the Python API and CLI.
 
 ## 0.1.0 - 2026-09-13
 

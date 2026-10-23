@@ -21,10 +21,11 @@ used. `download` writes a new archive (default GTFS.zip), checks its structure, 
 prints its path and provenance as JSON. Existing archives are not replaced.
 `--url` bypasses discovery. Network commands accept `--timeout` in seconds.
 
-`validate` scans all CSV tables and time fields and reports basic validation and
-row counts as JSON. It does not claim complete GTFS compliance. File and domain
-errors exit with code 1 and an error message on stderr; invalid arguments use
-code 2. Successful commands exit with code 0.
+`validate` scans all CSV tables and reports `valid`, row counts, and bounded
+core-GTFS diagnostics as JSON. Structural archive/CSV errors and feeds with
+semantic diagnostics exit with code 1; the latter still print the full report.
+This is not a complete GTFS compliance claim. Invalid arguments use code 2.
+Successful commands exit with code 0.
 
 `export metro` accepts `--input` for offline use or `--url` for a pinned remote
 feed. Without either, it discovers and downloads the official current feed into

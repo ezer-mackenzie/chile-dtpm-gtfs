@@ -35,8 +35,29 @@ headers, and inconsistent CSV column counts. It never extracts archive members.
 The default expanded ZIP limit is 8 GiB and the member limit is 1,000; advanced
 callers can configure expanded size with `GTFSLoader`.
 
-`validate()` consumes all CSV records, checks ZIP CRCs for those tables and service
-time syntax, and reports record counts. This is basic structural validation, not
-certification against every conditional rule in the GTFS specification. Use a
-full external GTFS validator for that purpose. `parse_service_time("25:10:00")`
-returns 90600 service seconds; blank intermediate times remain optional values.
+`validate()` consumes every CSV record, checks ZIP CRCs and service-time syntax,
+and reports row counts plus core value and relationship errors. A
+`ValidationIssue` identifies its `code`, table, logical CSV `record_number` (the
+header is record 1), and an actionable message. `ValidationReport.valid` is false
+when errors are present. At most 1,000 issues are retained; the report marks
+`diagnostics_truncated` if more were found. Structural ZIP/CSV failures still raise
+`InvalidGTFSFeedError`; semantic record errors are returned so a caller can inspect
+multiple problems in one call. Validation makes two streaming passes so references
+can be checked regardless of ZIP table order; it retains identifier indexes, not
+the full `stop_times.txt` table.
+
+The core checks cover identifiers and references among agencies, routes, stops,
+trips, services, shapes, and levels; route/location types; route names; stop
+coordinates and hierarchy; calendar dates and weekday flags; calendar exceptions;
+nonnegative stop sequence values and service times; and basic frequency values.
+This remains basic
+validation, not certification against every conditional rule or recommendation in
+the GTFS specification. Use a full external GTFS validator for that purpose.
+`parse_service_time("25:10:00")` returns 90600 service seconds; blank intermediate
+times remain optional values.
+
+For a repeatable local timing sample using a generated feed, run
+`uv run python scripts/benchmark_validation.py --stop-times 100000`. The script
+prints the scanned record count, elapsed validation seconds, and diagnostic status.
+Compare results using the same Python version, machine, and row count; these
+measurements are not CI pass/fail thresholds.

@@ -123,14 +123,31 @@ def download(
 def validate(
     path: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
 ) -> None:
-    """Run basic structural/CSV/time validation on a local ZIP and print row counts."""
+    """Validate a local ZIP and print row counts with semantic diagnostics."""
     with _errors(), GTFSFeed.from_file(path) as feed:
         report = feed.validate()
         typer.echo(
             json.dumps(
-                {"valid": True, "validation": "basic", "row_counts": report.row_counts}, indent=2
+                {
+                    "valid": report.valid,
+                    "validation": "core",
+                    "row_counts": report.row_counts,
+                    "diagnostics": [
+                        {
+                            "code": issue.code,
+                            "table": issue.table,
+                            "record_number": issue.record_number,
+                            "message": issue.message,
+                        }
+                        for issue in report.issues
+                    ],
+                    "diagnostics_truncated": report.diagnostics_truncated,
+                },
+                indent=2,
             )
         )
+        if not report.valid:
+            raise typer.Exit(code=1)
 
 
 @export_app.command("metro")
