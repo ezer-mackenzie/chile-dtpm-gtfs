@@ -61,12 +61,13 @@ publication-to-domain workflow.
   start-inclusive/end-exclusive, and bounded to 100,000 trips and 5,000,000
   generated stop-time records.
 
-### v0.6.0: station pathways and levels
+### v0.6.0: station pathways and levels (implemented; release pending)
 
 - Normalize GTFS pathways and levels sufficiently to expose declared station
   connectivity and accessibility attributes.
-- Keep graph traversal separate from Metro selection and avoid inventing links,
-  transfer times, or accessibility guarantees absent from source data.
+- Retain pathways only when both endpoints are in the selected locations. Keep
+  graph traversal separate and avoid inventing links, transfer times, or
+  accessibility guarantees absent from source data.
 
 ### v0.7.0: normalized JSON export
 

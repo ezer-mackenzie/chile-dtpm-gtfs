@@ -4,6 +4,13 @@
 
 No changes yet.
 
+## 0.6.0 - 2026-10-23
+
+### Added
+
+- Immutable `Level` and `Pathway` domain records on selected transit networks,
+  preserving only source-declared connectivity with endpoints in the selection.
+
 ## 0.5.0 - 2026-10-23
 
 ### Added

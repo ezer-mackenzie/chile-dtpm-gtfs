@@ -6,6 +6,8 @@ from collections.abc import Iterable
 from chile_dtpm_gtfs.domain.models import (
     Agency,
     Entrance,
+    Level,
+    Pathway,
     Platform,
     Route,
     Station,
@@ -152,4 +154,42 @@ def stop_time(row: dict[str, str]) -> StopTime:
         integer(required(row, "stop_sequence"), "stop_sequence"),
         parse_service_time(arrival) if arrival else None,
         parse_service_time(departure) if departure else None,
+    )
+
+
+def level(row: dict[str, str]) -> Level:
+    """Normalize a declared GTFS level."""
+    return Level(
+        required(row, "level_id"),
+        number(required(row, "level_index"), "level_index"),
+        row.get("level_name") or None,
+    )
+
+
+def pathway(row: dict[str, str]) -> Pathway:
+    """Normalize one declared pathway without deriving additional connections."""
+    bidirectional = required(row, "is_bidirectional")
+    if bidirectional not in {"0", "1"}:
+        raise InvalidGTFSFeedError(f"Invalid is_bidirectional: {bidirectional!r}")
+    mode = integer(required(row, "pathway_mode"), "pathway_mode", minimum=1)
+    if mode > 7:
+        raise InvalidGTFSFeedError(f"Invalid pathway_mode: {mode}")
+    stairs = row.get("stair_count", "")
+    if stairs:
+        stair_digits = stairs[1:] if stairs.startswith("-") else stairs
+        if not stair_digits or not stair_digits.isascii() or not stair_digits.isdigit():
+            raise InvalidGTFSFeedError(f"Invalid stair_count: {stairs!r}")
+    return Pathway(
+        required(row, "pathway_id"),
+        required(row, "from_stop_id"),
+        required(row, "to_stop_id"),
+        mode,
+        bidirectional == "1",
+        number(row["length"], "length") if row.get("length") else None,
+        integer(row["traversal_time"], "traversal_time") if row.get("traversal_time") else None,
+        int(stairs) if stairs else None,
+        number(row["max_slope"], "max_slope") if row.get("max_slope") else None,
+        number(row["min_width"], "min_width") if row.get("min_width") else None,
+        row.get("signposted_as") or None,
+        row.get("reversed_signposted_as") or None,
     )

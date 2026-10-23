@@ -24,10 +24,13 @@ Each selector follows routes -> trips -> stop_times -> stops. Membership never
 depends on names.
 
 `TransitNetwork` exposes immutable tuples of agencies, routes, trips, stops,
-stop_times, shapes, and services. Original IDs, route colors, trip directions,
-shape IDs, stop parents, location types, platform codes, and level IDs survive
-normalization. Times become optional service seconds; shapes keep every original
-point in numeric sequence order and every selected variant.
+stop_times, shapes, services, referenced levels, and declared pathways whose two
+endpoints are in the selected stop hierarchy. Original IDs, route colors, trip
+directions, shape IDs, stop parents, location types, platform codes, and level IDs
+survive normalization. Times become optional service seconds; shapes keep every
+original point in numeric sequence order and every selected variant. Pathways
+retain their declared directionality and attributes; no graph traversal, missing
+edge, or accessibility guarantee is inferred.
 
 `stations`, `platforms`, and `entrances` derive from declared GTFS hierarchy.
 Parent stations, their sibling platforms, entrances, and children are retained.
@@ -55,8 +58,8 @@ Duplicate IDs/sequences, invalid numeric values/coordinates, and broken selected
 relationships raise `InvalidGTFSFeedError`. Absent optional shapes are allowed and
 trip references are preserved. If a shapes table exists, referenced shapes must
 exist. No replacement geometry is invented. This validation covers the normalized
-subset, not all advanced GTFS constraints. Advanced pathways, levels, and
-frequency expansion are not part of these selectors.
+subset, not all advanced GTFS constraints. Frequencies are expanded only by the
+explicit opt-in described above.
 
 Large stop_times tables are scanned once per selection. Only matching rows are
 retained; agencies, routes, trips, and stops are indexed in memory. Repeated calls

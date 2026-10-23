@@ -100,6 +100,33 @@ class Shape:
 
 
 @dataclass(frozen=True, slots=True)
+class Level:
+    """A declared GTFS station level."""
+
+    id: str
+    index: float
+    name: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class Pathway:
+    """A declared directed or bidirectional connection between two GTFS locations."""
+
+    id: str
+    from_stop_id: str
+    to_stop_id: str
+    mode: int
+    is_bidirectional: bool
+    length: float | None
+    traversal_time: int | None
+    stair_count: int | None
+    max_slope: float | None
+    min_width: float | None
+    signposted_as: str | None
+    reversed_signposted_as: str | None
+
+
+@dataclass(frozen=True, slots=True)
 class ServiceException:
     """An explicit addition or removal on a service date."""
 

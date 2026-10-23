@@ -66,6 +66,54 @@ def test_absent_shapes_preserve_trip_references(tmp_path: Path, tables: dict[str
     assert {trip.shape_id for trip in metro.trips} == {"A", "Z"}
 
 
+def test_declared_pathways_and_levels_are_normalized(
+    tmp_path: Path, tables: dict[str, str]
+) -> None:
+    lines = tables["stops.txt"].splitlines()
+    tables["stops.txt"] = (
+        "\n".join(
+            [lines[0] + ",level_id"]
+            + [line + (",PLATFORM" if line.startswith(("P,", "Q,")) else ",") for line in lines[1:]]
+        )
+        + "\n"
+    )
+    tables["levels.txt"] = "level_id,level_index,level_name\nPLATFORM,0,Platform\n"
+    tables["pathways.txt"] = (
+        "pathway_id,from_stop_id,to_stop_id,pathway_mode,is_bidirectional,"
+        "length,traversal_time,stair_count,max_slope,min_width,signposted_as,"
+        "reversed_signposted_as\n"
+        "P1,P,Q,1,1,20.5,30,-4,0.05,1.2,North entrance,South exit\n"
+        "P2,B,P,1,0,,,,,,,\n"
+    )
+    with GTFSFeed.from_file(write_archive(tmp_path / "station-detail.zip", tables)) as feed:
+        network = feed.metro()
+
+    assert [(level.id, level.index, level.name) for level in network.levels] == [
+        ("PLATFORM", 0.0, "Platform")
+    ]
+    assert len(network.pathways) == 1
+    pathway = network.pathways[0]
+    assert pathway.id == "P1"
+    assert (pathway.from_stop_id, pathway.to_stop_id, pathway.mode) == ("P", "Q", 1)
+    assert pathway.is_bidirectional
+    assert pathway.stair_count == -4
+    assert pathway.signposted_as == "North entrance"
+
+
+def test_missing_referenced_level_is_explicit(tmp_path: Path, tables: dict[str, str]) -> None:
+    lines = tables["stops.txt"].splitlines()
+    tables["stops.txt"] = (
+        "\n".join(
+            [lines[0] + ",level_id"]
+            + [line + (",MISSING" if line.startswith("P,") else ",") for line in lines[1:]]
+        )
+        + "\n"
+    )
+    with GTFSFeed.from_file(write_archive(tmp_path / "missing-level.zip", tables)) as feed:
+        with pytest.raises(InvalidGTFSFeedError, match="Referenced levels are missing"):
+            feed.metro()
+
+
 @pytest.mark.parametrize(
     "table,old,new",
     [

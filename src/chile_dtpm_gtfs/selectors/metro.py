@@ -253,6 +253,18 @@ def select_network(
             list(feed.rows("frequencies.txt")),
         )
     shapes = _shapes(feed, {item.shape_id for item in trips.values() if item.shape_id})
+    selected_stop_ids = {item.id for item in selected_stops}
+    referenced_level_ids = {item.level_id for item in selected_stops if item.level_id}
+    all_levels = normalize.unique(normalize.level(row) for row in feed.rows("levels.txt"))
+    missing_levels = referenced_level_ids - all_levels.keys()
+    if missing_levels:
+        raise InvalidGTFSFeedError(f"Referenced levels are missing: {sorted(missing_levels)}")
+    pathways = normalize.unique(
+        normalize.pathway(row)
+        for row in feed.rows("pathways.txt")
+        if row.get("from_stop_id") in selected_stop_ids
+        and row.get("to_stop_id") in selected_stop_ids
+    )
     agency_ids = {item.agency_id for item in routes.values()}
     return TransitNetwork(
         feed.metadata,
@@ -263,4 +275,6 @@ def select_network(
         tuple(sorted(times, key=lambda item: (item.trip_id, item.sequence))),
         shapes,
         calendars,
+        tuple(all_levels[key] for key in sorted(referenced_level_ids)),
+        tuple(pathways[key] for key in sorted(pathways)),
     )

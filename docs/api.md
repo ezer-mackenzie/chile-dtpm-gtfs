@@ -63,7 +63,8 @@ coverage fields may be `None`. Datetimes are timezone-aware UTC; dates use `date
 
 `domain.network.TransitNetwork` holds tuples of `agencies`, `routes`, `trips`,
 `stops`, `stop_times`, `shapes`, and `services`, plus `metadata`. `stations`,
-`platforms`, and `entrances` are typed derived views. Records are exported from
+`platforms`, and `entrances` are typed derived views. It also exposes declared
+`levels` and `pathways` that relate selected locations. Records are exported from
 `chile_dtpm_gtfs.domain`:
 
 | Model | Fields |
@@ -75,6 +76,8 @@ coverage fields may be `None`. Datetimes are timezone-aware UTC; dates use `date
 | `StopTime` | `trip_id`, `stop_id`, `sequence`, `arrival_seconds`, `departure_seconds` |
 | `Shape` | `id`, ordered `points` |
 | `ShapePoint` | `latitude`, `longitude`, `sequence`, optional `distance_traveled` |
+| `Level` | `id`, `index`, optional `name` |
+| `Pathway` | `id`, `from_stop_id`, `to_stop_id`, `mode`, `is_bidirectional`, optional physical/accessibility fields |
 | `Service` | `id`, `start_date`, `end_date`, `weekdays`, `exceptions`; method `is_active(on)` |
 | `ServiceException` | `on`, `added` |
 

@@ -3,6 +3,8 @@
 from chile_dtpm_gtfs.domain.models import (
     Agency,
     Entrance,
+    Level,
+    Pathway,
     Platform,
     Route,
     Service,
@@ -18,6 +20,8 @@ from chile_dtpm_gtfs.domain.models import (
 __all__ = [
     "Agency",
     "Entrance",
+    "Level",
+    "Pathway",
     "Platform",
     "Route",
     "Service",

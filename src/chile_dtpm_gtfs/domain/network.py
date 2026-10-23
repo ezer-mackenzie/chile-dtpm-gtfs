@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 from chile_dtpm_gtfs.domain.models import (
     Agency,
     Entrance,
+    Level,
+    Pathway,
     Platform,
     Route,
     Service,
@@ -36,6 +38,8 @@ class TransitNetwork:
     stop_times: tuple[StopTime, ...]
     shapes: tuple[Shape, ...]
     services: tuple[Service, ...]
+    levels: tuple[Level, ...] = ()
+    pathways: tuple[Pathway, ...] = ()
 
     @property
     def stations(self) -> tuple[Station, ...]:
