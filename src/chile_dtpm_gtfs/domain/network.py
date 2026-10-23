@@ -62,8 +62,20 @@ class TransitNetwork:
 
         return GeoJSONExporter().to_dict(self)
 
+    def to_json(self) -> dict[str, JSONValue]:
+        """Export all normalized domain records as a versioned JSON document."""
+        from chile_dtpm_gtfs.exporters.normalized_json import NormalizedJSONExporter
+
+        return NormalizedJSONExporter().to_dict(self)
+
     def write_geojson(self, path: str | Path, *, overwrite: bool = False) -> Path:
         """Write GeoJSON atomically; replacing an existing file is opt-in."""
         from chile_dtpm_gtfs.exporters.base import write_document
 
         return write_document(self.to_geojson(), path, overwrite=overwrite)
+
+    def write_json(self, path: str | Path, *, overwrite: bool = False) -> Path:
+        """Write normalized JSON atomically; replacing an existing file is opt-in."""
+        from chile_dtpm_gtfs.exporters.base import write_document
+
+        return write_document(self.to_json(), path, overwrite=overwrite)

@@ -31,6 +31,31 @@ def test_geojson_variants_and_coordinates(archive_path: Path, tmp_path: Path) ->
     assert len({item["id"] for item in features}) == len(features)
 
 
+def test_normalized_json_export_is_deterministic_and_round_trips(
+    archive_path: Path, tmp_path: Path
+) -> None:
+    with GTFSFeed.from_file(archive_path) as feed:
+        network = feed.metro()
+
+    document = network.to_json()
+    encoded = json.dumps(document, ensure_ascii=False, allow_nan=False)
+    assert json.loads(encoded) == document
+    assert document["schema_version"] == 1
+    assert document["metadata"]["sha256"] == network.metadata.sha256
+    assert document["trips"][0]["id"] == "T"
+    assert document["stop_times"][0]["arrival_seconds"] == 90600
+    assert document["services"][0]["start_date"] == "2026-01-01"
+    assert document == network.to_json()
+
+    path = network.write_json(tmp_path / "metro.json")
+    assert json.loads(path.read_text(encoding="utf-8")) == document
+    with pytest.raises(FeedExportError, match="already exists"):
+        network.write_json(path)
+    network.write_json(path, overwrite=True)
+    assert json.loads(path.read_text(encoding="utf-8")) == document
+    assert list(tmp_path.glob("*.part")) == []
+
+
 def test_no_shapes_uses_null_geometry(tmp_path: Path, tables: dict[str, str]) -> None:
     del tables["shapes.txt"]
     with GTFSFeed.from_file(write_archive(tmp_path / "feed.zip", tables)) as feed:

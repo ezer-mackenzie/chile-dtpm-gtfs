@@ -59,6 +59,7 @@ with publication.download() as feed:
     print(feed.metadata.sha256)
     metro = feed.metro()
     metro.write_geojson("metro.geojson")
+    metro.write_json("metro.json")
 ```
 
 Downloads stream to temporary storage, which the context manager removes. Use

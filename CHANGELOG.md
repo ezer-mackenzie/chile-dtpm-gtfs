@@ -4,6 +4,13 @@
 
 No changes yet.
 
+## 0.7.0 - 2026-10-23
+
+### Added
+
+- Versioned normalized JSON serialization for all selected domain records, with
+  provenance and atomic file output through the Python API and CLI.
+
 ## 0.6.0 - 2026-10-23
 
 ### Added

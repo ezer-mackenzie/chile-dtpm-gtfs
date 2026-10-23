@@ -28,6 +28,7 @@ otherwise, close the feed or use a context manager to release temporary storage.
 - [GTFS loading](gtfs.md): local/remote sources and basic validation boundaries.
 - [Metro selection](metro.md): relationships, hierarchy, shapes, and calendars.
 - [GeoJSON](geojson.md): output structure and original geographic coordinates.
+- [Normalized JSON](json.md): versioned domain snapshots and provenance.
 - [CLI](cli.md): equivalent command-line workflows.
 - [Architecture](architecture.md): responsibilities and dependencies.
 - [Testing](testing.md): offline tests, opt-in live checks, and packaging checks.

@@ -69,7 +69,7 @@ publication-to-domain workflow.
   graph traversal separate and avoid inventing links, transfer times, or
   accessibility guarantees absent from source data.
 
-### v0.7.0: normalized JSON export
+### v0.7.0: normalized JSON export (implemented; release pending) (implemented; release pending)
 
 - Export the normalized domain model, not raw GTFS CSV rows.
 - Document a deterministic output shape, metadata/provenance treatment, and

@@ -70,6 +70,22 @@ def test_validate_and_export(archive_path: Path, tmp_path: Path) -> None:
     )
     assert result.exit_code == 0, result.output
     assert len(json.loads(output.read_text())["features"]) == 6
+    normalized = tmp_path / "metro.json"
+    result = runner.invoke(
+        app,
+        [
+            "export",
+            "metro",
+            "--input",
+            str(archive_path),
+            "--format",
+            "json",
+            "--output",
+            str(normalized),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert json.loads(normalized.read_text())["schema_version"] == 1
 
 
 def test_validate_reports_semantic_errors(tmp_path: Path, tables: dict[str, str]) -> None:

@@ -164,11 +164,11 @@ def export_metro(
     overwrite: Annotated[bool, typer.Option(help="Replace an existing GeoJSON file.")] = False,
     timeout: Annotated[float, typer.Option(min=0.1)] = 60.0,
 ) -> None:
-    """Export Metro from a local ZIP, explicit URL, or the official current feed."""
+    """Export Metro as GeoJSON or normalized JSON from a GTFS feed."""
     if input_path is not None and url is not None:
         raise typer.BadParameter("Choose either --input or --url.")
-    if format_name != "geojson":
-        raise typer.BadParameter("Only geojson is supported in this release.")
+    if format_name not in {"geojson", "json"}:
+        raise typer.BadParameter("Choose --format geojson or json.")
     when = _date(on)
     with _errors():
         if input_path is not None:
@@ -178,5 +178,10 @@ def export_metro(
         else:
             feed = DTPM(timeout=timeout).current().download(timeout=timeout)
         with feed:
-            result = feed.metro(on=when).write_geojson(output, overwrite=overwrite)
+            network = feed.metro(on=when)
+            result = (
+                network.write_geojson(output, overwrite=overwrite)
+                if format_name == "geojson"
+                else network.write_json(output, overwrite=overwrite)
+            )
             typer.echo(str(result))

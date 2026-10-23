@@ -14,6 +14,7 @@ nav:
       - GTFS loading: gtfs.md
       - Metro selection: metro.md
       - GeoJSON: geojson.md
+      - Normalized JSON: json.md
       - CLI: cli.md
   - Development:
       - Architecture: architecture.md

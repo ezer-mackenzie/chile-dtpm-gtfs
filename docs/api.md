@@ -89,7 +89,8 @@ and accepts hours beyond 24. Blank intermediate values become `None` in StopTime
 
 `network.to_geojson()` returns a JSON-compatible dictionary.
 `network.write_geojson(path, overwrite=False)` atomically writes it and returns a
-Path. `exporters.geojson.GeoJSONExporter` implements the small
+Path. `network.to_json()` and `network.write_json(path, overwrite=False)` provide
+a versioned normalized-domain JSON document. `exporters.geojson.GeoJSONExporter` implements the small
 `exporters.base.Exporter` protocol. Export requires no open feed or HTTP access.
 
 Errors in `chile_dtpm_gtfs.exceptions` derive from `DTPMError`:
