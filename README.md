@@ -101,7 +101,9 @@ trip directions survive. GTFS times such as `25:10:00` become service seconds.
 
 Use `metro(on=date(...))` for calendar-based service filtering; calendar_dates
 exceptions override weekly calendars. Frequency trips remain templates. Generic
-`feed.select(route_types=frozenset({...}))` uses the same relational pipeline.
+`feed.bus()` and `feed.rail()` convenience selectors use documented GTFS route
+types and the same relational pipeline as `metro()`. Use
+`feed.select(route_types=frozenset({...}))` for explicit or extended types.
 Optional advanced tables remain accessible through `feed.rows("pathways.txt")`
 and related table names. Missing optional tables yield no rows.
 

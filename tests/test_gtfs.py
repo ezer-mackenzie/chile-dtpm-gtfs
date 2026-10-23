@@ -78,6 +78,34 @@ def test_optional_files_are_optional(tmp_path: Path, tables: dict[str, str]) -> 
         assert feed.validate().row_counts["routes.txt"] == 2
 
 
+def test_bus_and_rail_selectors_use_standard_route_types(archive_path: Path) -> None:
+    with GTFSFeed.from_file(archive_path) as feed:
+        bus = feed.bus()
+        rail = feed.rail()
+
+    assert [route.id for route in bus.routes] == ["B"]
+    assert [route.id for route in rail.routes] == ["R"]
+
+
+def test_bus_and_rail_selectors_preserve_generic_route_type_selection(
+    tmp_path: Path, tables: dict[str, str]
+) -> None:
+    tables["routes.txt"] += "T,M,Trolleybus,Electric bus,11,\nL,M,Light rail,Light rail,0,\n"
+    tables["trips.txt"] += "T,WK,TRIP_T,0,\nL,WK,TRIP_L,0,\n"
+    tables["stop_times.txt"] += "TRIP_T,09:00:00,09:00:00,P,3\nTRIP_L,09:00:00,09:00:00,P,3\n"
+    for route_type in (2, 5, 6, 7, 12):
+        identifier = f"RAIL_{route_type}"
+        tables["routes.txt"] += f"{identifier},M,Rail {route_type},Rail,{route_type},\n"
+        tables["trips.txt"] += f"{identifier},WK,TRIP_{identifier},0,\n"
+        tables["stop_times.txt"] += f"TRIP_{identifier},09:00:00,09:00:00,P,3\n"
+    with GTFSFeed.from_file(write_archive(tmp_path / "modes.zip", tables)) as feed:
+        assert {route.route_type for route in feed.bus().routes} == {3, 11}
+        assert {route.route_type for route in feed.rail().routes} == {0, 1, 2, 5, 6, 7, 12}
+        assert {route.route_type for route in feed.select(route_types=frozenset({11})).routes} == {
+            11
+        }
+
+
 @pytest.mark.parametrize("payload", [b"not a zip", b"", b"PK truncated"])
 def test_invalid_zip(tmp_path: Path, payload: bytes) -> None:
     path = tmp_path / "invalid.zip"

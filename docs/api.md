@@ -38,6 +38,8 @@ Spanish date. These parser/resolver operations perform no I/O.
 | `feed.rows("table.txt")` | Streaming string dictionaries; absent optional tables yield no rows |
 | `feed.validate()` | `ValidationReport` with row counts, validity, and core GTFS diagnostics |
 | `feed.metro(on=None)` | Independent normalized snapshot for route type 1 |
+| `feed.bus(on=None)` | Independent snapshot for bus/trolleybus route types 3 and 11 |
+| `feed.rail(on=None)` | Independent snapshot for standard rail-related route types |
 | `feed.select(route_types=frozenset({...}), on=None)` | Same pipeline for specified route types |
 | `feed.close()` | Remove owned temporary storage; preserve caller-owned files |
 

@@ -44,7 +44,7 @@ publication-to-domain workflow.
 - Cover normal, special, ambiguous, and future publication cases with local HTML
   fixtures and Santiago-date tests.
 
-### v0.4.0: documented mode selectors
+### v0.4.0: documented mode selectors (implemented; release pending)
 
 - Add convenient bus and rail selectors using standard GTFS `route_type` values
   and the existing relationship-based selection pipeline.

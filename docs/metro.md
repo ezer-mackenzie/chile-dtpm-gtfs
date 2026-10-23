@@ -13,10 +13,15 @@ for route in metro.routes:
     print(route.id, route.short_name)
 ```
 
-`metro()` selects standard subway `route_type=1`. It follows routes -> trips ->
-stop_times -> stops. Names never determine membership. `select(route_types=...)`
-provides the same behavior for an explicit frozenset of GTFS route types. Extended
-route types are not automatically classified as Metro in v0.1.0.
+`metro()` selects standard subway `route_type=1`; `bus()` selects bus and
+trolleybus types `{3, 11}`; `rail()` selects tram, subway, rail, cable tram,
+aerial lift, funicular, and monorail types `{0, 1, 2, 5, 6, 7, 12}`. These
+convenience methods use only GTFS route_type values, not route or stop names.
+`select(route_types=...)` remains available for an explicit frozenset, including
+extended route types when the caller knows their meaning.
+
+Each selector follows routes -> trips -> stop_times -> stops. Membership never
+depends on names.
 
 `TransitNetwork` exposes immutable tuples of agencies, routes, trips, stops,
 stop_times, shapes, and services. Original IDs, route colors, trip directions,
@@ -41,8 +46,8 @@ Duplicate IDs/sequences, invalid numeric values/coordinates, and broken selected
 relationships raise `InvalidGTFSFeedError`. Absent optional shapes are allowed and
 trip references are preserved. If a shapes table exists, referenced shapes must
 exist. No replacement geometry is invented. This validation covers the normalized
-subset, not all advanced GTFS constraints. Advanced pathways, levels, transfers,
-and frequencies remain raw accessible tables in this release.
+subset, not all advanced GTFS constraints. Advanced pathways, levels, and
+frequency expansion are not part of these selectors.
 
 Large stop_times tables are scanned once per selection. Only matching rows are
 retained; agencies, routes, trips, and stops are indexed in memory. Repeated calls

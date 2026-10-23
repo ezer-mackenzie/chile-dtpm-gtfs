@@ -22,6 +22,9 @@ from chile_dtpm_gtfs.gtfs.metadata import FeedMetadata
 from chile_dtpm_gtfs.gtfs.validator import GTFSValidator, ValidationReport
 from chile_dtpm_gtfs.source.downloader import FeedDownloader
 
+BUS_ROUTE_TYPES = frozenset({3, 11})
+RAIL_ROUTE_TYPES = frozenset({0, 1, 2, 5, 6, 7, 12})
+
 
 def parse_feed_date(value: str) -> date | None:
     """Parse an optional YYYYMMDD date with a library-specific error."""
@@ -150,6 +153,14 @@ class GTFSFeed:
     def metro(self, *, on: date | None = None) -> "TransitNetwork":
         """Select subway routes (route_type=1), optionally filtering a service date."""
         return self.select(route_types=frozenset({1}), on=on)
+
+    def bus(self, *, on: date | None = None) -> "TransitNetwork":
+        """Select standard bus and trolleybus route types (3 and 11)."""
+        return self.select(route_types=BUS_ROUTE_TYPES, on=on)
+
+    def rail(self, *, on: date | None = None) -> "TransitNetwork":
+        """Select standard tram, subway, rail, and guided rail route types."""
+        return self.select(route_types=RAIL_ROUTE_TYPES, on=on)
 
     def _ensure_open(self) -> None:
         if self._closed:

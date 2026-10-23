@@ -4,6 +4,13 @@
 
 No changes yet.
 
+## 0.4.0 - 2026-10-23
+
+### Added
+
+- `GTFSFeed.bus()` and `GTFSFeed.rail()` convenience selectors using standard
+  GTFS route types and the existing relationship-based pipeline.
+
 ## 0.3.0 - 2026-10-23
 
 ### Changed
