@@ -14,7 +14,11 @@ All public entry points have type annotations and English docstrings. Import
 
 `FeedPublication` is frozen and has `title`, `effective_from`, `download_url`,
 `filename`, optional `description`, and `source_page`. Source words are retained;
-whitespace is normalized. Discovery has no cache and no hardcoded current ZIP.
+whitespace is normalized. Only the explicit `GTFS Vigente desde` date determines
+applicability; special-service and diversion descriptions are informational and
+do not imply a guessed end date or applicability interval. Future entries are
+excluded, and equal effective dates retain source-page order. Discovery has no
+cache and no hardcoded current ZIP.
 
 Advanced components: `source.client.DTPMWebsiteClient.fetch()` returns HTML and its
 final URL; `source.parser.PublicationParser.parse(html, source_url=...)` reads

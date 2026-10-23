@@ -9,7 +9,10 @@ from chile_dtpm_gtfs.source.models import FeedPublication
 
 
 class CurrentFeedResolver:
-    """Choose the greatest applicable date; ties retain the first page entry."""
+    """Choose the greatest explicit effective date; ties retain page order.
+
+    Descriptions are informational and never synthesize applicability windows.
+    """
 
     def resolve(
         self, publications: Iterable[FeedPublication], *, on: date | None = None
@@ -19,4 +22,5 @@ class CurrentFeedResolver:
         candidates = [item for item in publications if item.effective_from <= today]
         if not candidates:
             raise NoCurrentPublicationError(f"No publication applies on {today.isoformat()}.")
+        # max() is stable for equal keys, so the first matching page entry wins ties.
         return max(candidates, key=lambda item: item.effective_from)

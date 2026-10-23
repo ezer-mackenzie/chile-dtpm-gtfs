@@ -35,7 +35,7 @@ publication-to-domain workflow.
   Avoid brittle wall-clock limits in cross-platform CI; investigate regressions
   against the same fixture and environment.
 
-### v0.3.0: publication applicability policy
+### v0.3.0: publication applicability policy (implemented; release pending)
 
 - Support DTPM special-service or diversion applicability only when the source
   provides enough information for a deterministic result.

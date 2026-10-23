@@ -46,7 +46,8 @@ It uses the published ZIP href, never a filename constructed from a date.
 `current()` returns metadata without downloading the archive. Future publications
 are excluded using today's date in `America/Santiago`; `current(on=date(...))`
 allows an explicit applicability date. Equal dates retain page order. Special
-service descriptions are preserved without guessing their applicability.
+service descriptions are preserved without guessing applicability windows; only
+the source's explicit effective date controls selection.
 
 ## Download, select Metro, and export GeoJSON
 

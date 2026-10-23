@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+No changes yet.
+
+## 0.3.0 - 2026-10-23
+
+### Changed
+
+- Clarified publication applicability: only the source's explicit effective date
+  is used, future entries are excluded, and equal dates retain page order.
+- Special-service and diversion descriptions remain informational and are never
+  converted into inferred applicability windows.
+
+## 0.2.0 - 2026-10-23
+
 ### Added
 
 - Core GTFS validation diagnostics for common field, identifier, calendar, time,

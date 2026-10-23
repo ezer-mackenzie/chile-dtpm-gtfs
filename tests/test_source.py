@@ -91,6 +91,29 @@ def test_resolver() -> None:
             resolver.resolve(items, on=date(2020, 1, 1))
 
 
+def test_special_service_description_does_not_create_applicability_window() -> None:
+    regular, special = PublicationParser().parse(
+        '<p>GTFS Vigente desde 1 de enero 2026</p><a href="/regular.zip">GTFS</a>'
+        "<p>GTFS Vigente desde 1 de enero 2026 + desvíos elecciones</p>"
+        '<a href="/special.zip">GTFS</a>'
+    )
+    resolver = CurrentFeedResolver()
+
+    assert special.description == "+ desvíos elecciones"
+    assert resolver.resolve([special, regular], on=date(2026, 1, 1)) == special
+    assert resolver.resolve([regular, special], on=date(2026, 1, 1)) == regular
+
+
+def test_special_service_is_not_selected_before_its_published_effective_date() -> None:
+    regular, special = PublicationParser().parse(
+        '<p>GTFS Vigente desde 1 de enero 2026</p><a href="/regular.zip">GTFS</a>'
+        "<p>GTFS Vigente desde 5 de enero 2026 + servicio especial</p>"
+        '<a href="/special.zip">GTFS</a>'
+    )
+
+    assert CurrentFeedResolver().resolve([special, regular], on=date(2026, 1, 4)) == regular
+
+
 def test_facade_only_fetches_html() -> None:
     requests: list[str] = []
 
