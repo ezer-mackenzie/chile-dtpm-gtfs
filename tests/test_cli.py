@@ -19,7 +19,7 @@ def test_help_and_version() -> None:
     assert runner.invoke(app, ["--help"]).exit_code == 0
     result = runner.invoke(app, ["--version"])
     assert result.exit_code == 0
-    assert result.stdout.strip() == "0.1.0"
+    assert result.stdout.strip() == "1.0.0"
 
 
 def test_discovery_commands(monkeypatch: pytest.MonkeyPatch) -> None:

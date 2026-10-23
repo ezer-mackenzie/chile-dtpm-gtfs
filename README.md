@@ -19,14 +19,14 @@ uv sync --locked
 uv run chile-dtpm-gtfs --version
 ```
 
-To install a locally built v0.1.0 wheel into another environment:
+To install the locally built v1.0.0 wheel into another environment:
 
 ```sh
 uv build
-uv pip install dist/chile_dtpm_gtfs-0.1.0-py3-none-any.whl
+uv pip install dist/chile_dtpm_gtfs-1.0.0-py3-none-any.whl
 ```
 
-A local build does not imply that this version has been published on PyPI.
+This release preparation does not imply that v1.0.0 has been published on PyPI.
 
 ## Discover the current feed
 

@@ -18,12 +18,11 @@
 Changes were implemented and verified in separate Conventional Commits. A local
 milestone/tag does not imply that a GitHub release or PyPI upload has occurred.
 
-## Proposed path to v1.0.0
+## Completed path to v1.0.0
 
-These are ordered milestones, not a promise to implement every GTFS feature. Each
-phase should remain a separate, documented change with offline tests. Re-evaluate
-scope at phase boundaries; defer work that does not improve the library's core
-publication-to-domain workflow.
+The implemented milestones are recorded in order below. Each phase was kept as a
+separate, documented change with offline tests. The deferred work listed at the
+end is intentionally outside the v1.0.0 compatibility surface.
 
 ### v0.2.0: actionable GTFS validation (implemented; release pending)
 
@@ -99,6 +98,11 @@ publication-to-domain workflow.
   and domain imports now have explicit exports and tests.
 
 ## v1.0.0 acceptance criteria
+
+The distribution is versioned as v1.0.0. Final local release checks passed on
+Windows/Python 3.14.7; the CI matrix covers Python 3.12-3.14 on Linux and Windows
+and must pass before an actual release. Creating a Git tag or publishing it
+remains a separate action requiring approval.
 
 The release is ready when all of the following hold:
 

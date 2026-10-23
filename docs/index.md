@@ -1,8 +1,9 @@
 ﻿# chile-dtpm-gtfs documentation
 
-Version **0.1.0** provides an unofficial Python interface to GTFS publications from
-Chile's DTPM, from discovery through a first Metro GeoJSON export. It is independent
-of DTPM and does not claim official endorsement.
+Version **1.0.0** provides an unofficial Python interface to GTFS publications from
+Chile's DTPM, from discovery and downloading through validation, normalized
+selection, GeoJSON, and JSON export. It is independent of DTPM and does not claim
+official endorsement.
 
 ## Start here
 

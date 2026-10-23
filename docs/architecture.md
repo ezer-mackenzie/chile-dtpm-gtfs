@@ -44,7 +44,8 @@ not download a ZIP or activate a future publication.
 Select Metro through GTFS relationships and retain parent station/location type.
 Do not group stops by name or invent missing stations. Preserve every selected
 shape variant and original WGS84 points. Store times as service seconds and apply
-calendar exceptions before weekly rules. Frequency trips are not expanded in 0.1.0.
+calendar exceptions before weekly rules. Frequency trips remain templates by
+default. An explicit selector option expands only `exact_times=1` frequency rows.
 
 Basic validation covers archive structure, CSV streams, integrity and time syntax;
 normalization checks supported values and selected relationships. Full standard
@@ -53,5 +54,5 @@ advanced tables stay available as raw records.
 
 Exporters consume only domain snapshots. GeoJSON includes provenance, all selected
 locations, and every route/shape pair. Missing geometry is explicit. No presentation
-smoothing is applied. Cache layers, other modes, and other exporters can be added
-without changing discovery or coupling exporters to GTFS CSV parsing.
+smoothing is applied. Additional selectors and exporters can be added without
+changing discovery or coupling exporters to GTFS CSV parsing.

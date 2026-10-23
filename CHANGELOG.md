@@ -4,6 +4,19 @@
 
 No changes yet.
 
+## 1.0.0 - 2026-10-23
+
+First stable API milestone. This changelog entry and package metadata prepare a
+local release; the Git tag and PyPI/GitHub publication require separate approval.
+
+### Added
+
+- Deterministic DTPM applicability, core validation diagnostics, bus/rail
+  selectors, opt-in exact-time frequency expansion, and normalized pathways/levels.
+- Versioned normalized JSON export alongside provenance-preserving GeoJSON.
+- Documented API compatibility policy, generated-feed benchmarks, and the release
+  acceptance gates for supported Python environments.
+
 ## 0.9.0 - 2026-10-23
 
 ### Changed
