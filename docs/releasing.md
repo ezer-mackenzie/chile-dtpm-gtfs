@@ -4,6 +4,15 @@ Package versions follow Semantic Versioning (`0.1.0`); Git tags use the `v` pref
 (`v0.1.0`). Completing a local milestone does not automatically upload a package.
 All commit messages follow the conventions in AGENTS.md.
 
+## v1.0 API stability
+
+The documented APIs in [api.md](api.md), their typed domain records, documented
+errors, selectors, and exporter outputs are the compatibility surface. Internal
+modules not named in public guides may change without a compatibility promise.
+After v1.0.0, incompatible changes to the documented surface require a major
+version and migration guidance. Pre-1.0 minor releases may evolve APIs, with
+behavior changes recorded in the changelog.
+
 ## Local release preparation
 
 1. Update the version in pyproject.toml and the dated changelog entry.

@@ -16,6 +16,7 @@ from chile_dtpm_gtfs.domain.models import (
     StopTime,
     Trip,
 )
+from chile_dtpm_gtfs.domain.network import TransitNetwork
 
 __all__ = [
     "Agency",
@@ -32,4 +33,5 @@ __all__ = [
     "Stop",
     "StopTime",
     "Trip",
+    "TransitNetwork",
 ]

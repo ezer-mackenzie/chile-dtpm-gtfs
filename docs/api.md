@@ -1,7 +1,10 @@
 ﻿# API reference
 
-All public entry points have type annotations and English docstrings. Import
-`DTPM`, `FeedPublication`, `GTFSFeed`, and `FeedMetadata` from `chile_dtpm_gtfs`.
+The supported stable surface is the documented API in this guide. Import source
+and feed entry points, metadata, and validation report types from
+`chile_dtpm_gtfs`; import records and `TransitNetwork` from
+`chile_dtpm_gtfs.domain`. Implementation modules such as `gtfs.normalize` are not
+public compatibility boundaries.
 
 ## Discovery
 

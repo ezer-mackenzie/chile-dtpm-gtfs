@@ -8,9 +8,23 @@ import httpx
 import pytest
 from conftest import write_archive
 
+import chile_dtpm_gtfs
+import chile_dtpm_gtfs.domain as domain
 from chile_dtpm_gtfs import FeedPublication, GTFSFeed
 from chile_dtpm_gtfs.exceptions import InvalidGTFSFeedError
 from chile_dtpm_gtfs.gtfs.time import parse_service_time
+
+
+def test_documented_public_exports_are_explicit() -> None:
+    assert set(chile_dtpm_gtfs.__all__) == {
+        "DTPM",
+        "FeedPublication",
+        "GTFSFeed",
+        "FeedMetadata",
+        "ValidationIssue",
+        "ValidationReport",
+    }
+    assert {"Level", "Pathway", "TransitNetwork"} <= set(domain.__all__)
 
 
 def test_local_feed(archive_path: Path) -> None:

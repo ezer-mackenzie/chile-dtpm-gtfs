@@ -4,6 +4,13 @@
 
 No changes yet.
 
+## 0.9.0 - 2026-10-23
+
+### Changed
+
+- Reviewed documented imports and made `TransitNetwork` an explicit domain export;
+  clarified that implementation modules are not API compatibility boundaries.
+
 ## 0.8.0 - 2026-10-23
 
 ### Changed

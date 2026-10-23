@@ -86,7 +86,7 @@ publication-to-domain workflow.
 - Preserve streaming/resource ownership and use `scripts/benchmark_pipeline.py`
   for comparable measurements.
 
-### v0.9.0: release candidate and API review
+### v0.9.0: release candidate and API review (implemented; release pending)
 
 - Review every public symbol, error, selector, report, and exporter for coherent
   naming, type annotations, lifecycle behavior, and documentation.
@@ -95,6 +95,8 @@ publication-to-domain workflow.
   API candidate stable.
 - Record incompatible pre-1.0 changes and migration guidance; do not hide them in
   a release-preparation commit.
+- No intentional breaking API change was needed in this review; documented root
+  and domain imports now have explicit exports and tests.
 
 ## v1.0.0 acceptance criteria
 

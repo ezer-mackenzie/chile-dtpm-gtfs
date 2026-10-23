@@ -15,6 +15,8 @@ from chile_dtpm_gtfs.domain.network import TransitNetwork
 from chile_dtpm_gtfs.exporters.base import JSONValue
 from chile_dtpm_gtfs.exporters.geojson import metadata_dict
 
+__all__ = ["NormalizedJSONExporter"]
+
 
 class NormalizedJSONExporter:
     """Serialize domain records with explicit ISO dates and nullable fields."""
