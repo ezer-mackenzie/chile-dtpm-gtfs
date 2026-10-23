@@ -4,6 +4,13 @@
 
 No changes yet.
 
+## 0.5.0 - 2026-10-23
+
+### Added
+
+- Opt-in exact-time frequency expansion with deterministic generated IDs, preserved
+  headway templates, and bounded generated trip/stop-time counts.
+
 ## 0.4.0 - 2026-10-23
 
 ### Added

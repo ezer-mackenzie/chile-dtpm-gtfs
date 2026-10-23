@@ -106,6 +106,69 @@ def test_bus_and_rail_selectors_preserve_generic_route_type_selection(
         }
 
 
+def test_frequency_expansion_is_opt_in_and_expands_exact_times(
+    tmp_path: Path, tables: dict[str, str]
+) -> None:
+    tables["stop_times.txt"] += "B,08:10:00,08:10:00,Q,2\n"
+    tables["frequencies.txt"] = (
+        "trip_id,start_time,end_time,headway_secs,exact_times\nB,09:00:00,10:00:00,1800,1\n"
+    )
+    archive = write_archive(tmp_path / "frequency.zip", tables)
+
+    with GTFSFeed.from_file(archive) as feed:
+        template = feed.bus()
+        expanded = feed.bus(expand_frequencies=True)
+
+    assert [trip.id for trip in template.trips] == ["B"]
+    assert [trip.id for trip in expanded.trips] == ["B@32400", "B@34200"]
+    assert [
+        (item.trip_id, item.arrival_seconds, item.departure_seconds) for item in expanded.stop_times
+    ] == [
+        ("B@32400", 32400, 32400),
+        ("B@32400", 33000, 33000),
+        ("B@34200", 34200, 34200),
+        ("B@34200", 34800, 34800),
+    ]
+
+
+def test_frequency_headway_templates_remain_unexpanded(
+    tmp_path: Path, tables: dict[str, str]
+) -> None:
+    tables["frequencies.txt"] = (
+        "trip_id,start_time,end_time,headway_secs,exact_times\nB,09:00:00,10:00:00,1800,0\n"
+    )
+    with GTFSFeed.from_file(write_archive(tmp_path / "headway.zip", tables)) as feed:
+        network = feed.bus(expand_frequencies=True)
+
+    assert [trip.id for trip in network.trips] == ["B"]
+
+
+@pytest.mark.parametrize(
+    "frequencies, message",
+    [
+        (
+            "trip_id,start_time,end_time,headway_secs,exact_times\nB,10:00:00,09:00:00,1800,1\n",
+            "earlier than end_time",
+        ),
+        (
+            "trip_id,start_time,end_time,headway_secs,exact_times\nB,09:00:00,10:00:00,1800,2\n",
+            "exact_times",
+        ),
+        (
+            "trip_id,start_time,end_time,headway_secs,exact_times\nB,00:00:00,28:00:00,1,1\n",
+            "exceeds 100000",
+        ),
+    ],
+)
+def test_frequency_expansion_rejects_invalid_or_excessive_windows(
+    tmp_path: Path, tables: dict[str, str], frequencies: str, message: str
+) -> None:
+    tables["frequencies.txt"] = frequencies
+    with GTFSFeed.from_file(write_archive(tmp_path / "bad-frequency.zip", tables)) as feed:
+        with pytest.raises(InvalidGTFSFeedError, match=message):
+            feed.bus(expand_frequencies=True)
+
+
 @pytest.mark.parametrize("payload", [b"not a zip", b"", b"PK truncated"])
 def test_invalid_zip(tmp_path: Path, payload: bytes) -> None:
     path = tmp_path / "invalid.zip"

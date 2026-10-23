@@ -39,8 +39,17 @@ By default all advertised trips are included. With `on=date(...)`, calendar_date
 exceptions override weekday ranges. Exception-only services are supported. If a
 selected service has no calendar information at all, date filtering raises an
 explicit error. Route metadata remains present on dates without active trips;
-stops and shapes reflect the selected trips. Frequency-based trips are templates,
-not expanded departures; inspect frequencies.txt through `feed.rows()`.
+stops and shapes reflect the selected trips.
+
+Frequency records remain templates by default. Pass `expand_frequencies=True`
+to expand rows where `exact_times=1`; generated trip IDs use
+`<template-id>@<departure-seconds>`, and the interval is start-inclusive/end-
+exclusive with headway-sized steps. Times are shifted relative to the template's
+first departure (or arrival when departure is empty). `exact_times=0` or an empty
+value remains an unexpanded template because GTFS does not define exact departures
+for headway-based service. Expansion is bounded to 100,000 trips and 5,000,000
+stop-time records; excess raises `InvalidGTFSFeedError`. Inspect the original
+frequency records through `feed.rows("frequencies.txt")`.
 
 Duplicate IDs/sequences, invalid numeric values/coordinates, and broken selected
 relationships raise `InvalidGTFSFeedError`. Absent optional shapes are allowed and

@@ -37,10 +37,10 @@ Spanish date. These parser/resolver operations perform no I/O.
 | `feed.path`, `feed.tables`, `feed.metadata` | Absolute archive path, available table names, immutable metadata |
 | `feed.rows("table.txt")` | Streaming string dictionaries; absent optional tables yield no rows |
 | `feed.validate()` | `ValidationReport` with row counts, validity, and core GTFS diagnostics |
-| `feed.metro(on=None)` | Independent normalized snapshot for route type 1 |
-| `feed.bus(on=None)` | Independent snapshot for bus/trolleybus route types 3 and 11 |
-| `feed.rail(on=None)` | Independent snapshot for standard rail-related route types |
-| `feed.select(route_types=frozenset({...}), on=None)` | Same pipeline for specified route types |
+| `feed.metro(on=None, expand_frequencies=False)` | Independent normalized snapshot for route type 1 |
+| `feed.bus(on=None, expand_frequencies=False)` | Independent snapshot for bus/trolleybus route types 3 and 11 |
+| `feed.rail(on=None, expand_frequencies=False)` | Independent snapshot for standard rail-related route types |
+| `feed.select(route_types=frozenset({...}), on=None, expand_frequencies=False)` | Same pipeline for specified route types |
 | `feed.close()` | Remove owned temporary storage; preserve caller-owned files |
 
 Feeds support `with`. A local archive must remain present and unchanged while open.
@@ -48,6 +48,8 @@ Feeds support `with`. A local archive must remain present and unchanged while op
 `ValidationReport.issues` contains bounded `ValidationIssue` values with a stable
 code, table, logical record number, and message; structural ZIP/CSV errors continue
 to raise `InvalidGTFSFeedError`.
+Frequency expansion is opt-in through `expand_frequencies=True` on the selectors;
+only `exact_times=1` rows become generated trips.
 
 `DownloadResult` fields: `path`, `source_url`, `resolved_url`, `filename`,
 `downloaded_at`, `sha256`, `size_bytes`, `content_length`.

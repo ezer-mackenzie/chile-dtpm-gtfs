@@ -143,24 +143,41 @@ class GTFSFeed:
         self._ensure_open()
         return GTFSValidator().validate(self._loader)
 
-    def select(self, *, route_types: frozenset[int], on: date | None = None) -> "TransitNetwork":
-        """Select route types through GTFS relationships into an independent snapshot."""
+    def select(
+        self,
+        *,
+        route_types: frozenset[int],
+        on: date | None = None,
+        expand_frequencies: bool = False,
+    ) -> "TransitNetwork":
+        """Select route types, optionally expanding exact-time frequency rows."""
         from chile_dtpm_gtfs.selectors.metro import select_network
 
         self._ensure_open()
-        return select_network(self, route_types=route_types, on=on)
+        return select_network(
+            self,
+            route_types=route_types,
+            on=on,
+            expand_frequencies=expand_frequencies,
+        )
 
-    def metro(self, *, on: date | None = None) -> "TransitNetwork":
+    def metro(
+        self, *, on: date | None = None, expand_frequencies: bool = False
+    ) -> "TransitNetwork":
         """Select subway routes (route_type=1), optionally filtering a service date."""
-        return self.select(route_types=frozenset({1}), on=on)
+        return self.select(route_types=frozenset({1}), on=on, expand_frequencies=expand_frequencies)
 
-    def bus(self, *, on: date | None = None) -> "TransitNetwork":
+    def bus(self, *, on: date | None = None, expand_frequencies: bool = False) -> "TransitNetwork":
         """Select standard bus and trolleybus route types (3 and 11)."""
-        return self.select(route_types=BUS_ROUTE_TYPES, on=on)
+        return self.select(
+            route_types=BUS_ROUTE_TYPES, on=on, expand_frequencies=expand_frequencies
+        )
 
-    def rail(self, *, on: date | None = None) -> "TransitNetwork":
+    def rail(self, *, on: date | None = None, expand_frequencies: bool = False) -> "TransitNetwork":
         """Select standard tram, subway, rail, and guided rail route types."""
-        return self.select(route_types=RAIL_ROUTE_TYPES, on=on)
+        return self.select(
+            route_types=RAIL_ROUTE_TYPES, on=on, expand_frequencies=expand_frequencies
+        )
 
     def _ensure_open(self) -> None:
         if self._closed:

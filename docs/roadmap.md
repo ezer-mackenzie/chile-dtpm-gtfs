@@ -51,13 +51,15 @@ publication-to-domain workflow.
 - Make classification boundaries explicit; do not classify modes by route or stop
   names, and keep the generic `select(route_types=...)` API available.
 
-### v0.5.0: opt-in frequency expansion
+### v0.5.0: opt-in frequency expansion (implemented; release pending)
 
 - Add frequency-based trip expansion only behind an explicit API choice.
 - Define exact-time and headway behavior, date/calendar interaction, generated
   identifiers, and limits before implementation.
 - Preserve the current template representation and existing selector behavior by
-  default; test boundary and extended-service times offline.
+  default; `exact_times=0` remains a headway template. Exact-time expansion is
+  start-inclusive/end-exclusive, and bounded to 100,000 trips and 5,000,000
+  generated stop-time records.
 
 ### v0.6.0: station pathways and levels
 
