@@ -69,18 +69,22 @@ publication-to-domain workflow.
   graph traversal separate and avoid inventing links, transfer times, or
   accessibility guarantees absent from source data.
 
-### v0.7.0: normalized JSON export (implemented; release pending) (implemented; release pending)
+### v0.7.0: normalized JSON export (implemented; release pending)
 
 - Export the normalized domain model, not raw GTFS CSV rows.
 - Document a deterministic output shape, metadata/provenance treatment, and
   behavior for optional values; test round-trip JSON encoding and file writes.
 
-### v0.8.0: performance and usability hardening
+### v0.8.0: performance and usability hardening (implemented; release pending)
 
 - Measure representative load, validation, selection, and export workflows on
   generated fixtures sized to expose memory or runtime problems.
-- Optimize only measured bottlenecks, preserve streaming/resource ownership, and
-  publish practical limits and examples in the user guides.
+- The generated 100,000-stop-time Windows/Python 3.14 sample completed loading in
+  0.025s, validation in 0.621s, selection in 0.581s, GeoJSON in 0.004s, and
+  normalized JSON in 0.027s. These are an environment-specific baseline, not CI
+  thresholds; no optimization was justified by this sample.
+- Preserve streaming/resource ownership and use `scripts/benchmark_pipeline.py`
+  for comparable measurements.
 
 ### v0.9.0: release candidate and API review
 

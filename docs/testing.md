@@ -56,6 +56,14 @@ local GTFS-to-GeoJSON pipeline. It requires package-index access for dependencie
 The source distribution includes docs, tests, scripts, and the lockfile; the wheel
 contains the library, metadata, and license rather than test data or real feeds.
 
+## Performance measurements
+
+Run `uv run python scripts/benchmark_pipeline.py --stop-times 100000` to generate a
+synthetic feed and measure loading, validation, selection, GeoJSON export, and
+normalized JSON export. It reports elapsed seconds, archive size, and JSON output
+sizes. The script uses no live data and defines no wall-clock threshold; compare
+the same row count, Python version, and machine when investigating regressions.
+
 ## Coverage
 
 CI runs `uv run python -m pytest --cov=chile_dtpm_gtfs --cov-report=xml`.

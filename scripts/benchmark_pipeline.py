@@ -1,10 +1,10 @@
-"""Measure validation time on a generated feed with a configurable stop_times size."""
+"""Measure a generated feed's load, validation, selection, and export workflows."""
 
 import argparse
 import csv
 import json
 import time
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from io import TextIOWrapper
 from itertools import chain
 from pathlib import Path
@@ -96,6 +96,13 @@ def build_feed(path: Path, stop_time_count: int) -> None:
         )
 
 
+def measure[T](action: Callable[[], T]) -> tuple[T, float]:
+    """Run one stage and return its result and elapsed seconds."""
+    started = time.perf_counter()
+    result = action()
+    return result, time.perf_counter() - started
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stop-times", type=int, default=100_000)
@@ -107,17 +114,29 @@ def main() -> None:
         path = Path(directory) / "benchmark.zip"
         build_feed(path, arguments.stop_times)
         archive_bytes = path.stat().st_size
-        with GTFSFeed.from_file(path) as feed:
-            started = time.perf_counter()
-            report = feed.validate()
-            elapsed = time.perf_counter() - started
+        feed, load_seconds = measure(lambda: GTFSFeed.from_file(path))
+        try:
+            report, validation_seconds = measure(feed.validate)
+            network, selection_seconds = measure(lambda: feed.select(route_types=frozenset({1})))
+            geojson, geojson_seconds = measure(network.to_geojson)
+            normalized_json, normalized_json_seconds = measure(network.to_json)
+            geojson_bytes = len(json.dumps(geojson, allow_nan=False))
+            normalized_json_bytes = len(json.dumps(normalized_json, allow_nan=False))
+        finally:
+            feed.close()
 
     print(
         json.dumps(
             {
                 "stop_times": arguments.stop_times,
                 "archive_bytes": archive_bytes,
-                "validation_seconds": round(elapsed, 6),
+                "load_seconds": round(load_seconds, 6),
+                "validation_seconds": round(validation_seconds, 6),
+                "selection_seconds": round(selection_seconds, 6),
+                "geojson_seconds": round(geojson_seconds, 6),
+                "normalized_json_seconds": round(normalized_json_seconds, 6),
+                "geojson_bytes": geojson_bytes,
+                "normalized_json_bytes": normalized_json_bytes,
                 "valid": report.valid,
                 "diagnostic_count": len(report.issues),
                 "diagnostics_truncated": report.diagnostics_truncated,

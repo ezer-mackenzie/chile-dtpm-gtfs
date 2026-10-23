@@ -56,8 +56,8 @@ the GTFS specification. Use a full external GTFS validator for that purpose.
 `parse_service_time("25:10:00")` returns 90600 service seconds; blank intermediate
 times remain optional values.
 
-For a repeatable local timing sample using a generated feed, run
-`uv run python scripts/benchmark_validation.py --stop-times 100000`. The script
-prints the scanned record count, elapsed validation seconds, and diagnostic status.
-Compare results using the same Python version, machine, and row count; these
-measurements are not CI pass/fail thresholds.
+For repeatable local timings on a generated feed, run
+`uv run python scripts/benchmark_pipeline.py --stop-times 100000`. The script
+reports load, validation, selection, GeoJSON, and normalized JSON timings and
+output sizes. Compare results using the same Python version, machine, and row
+count; these measurements are not CI pass/fail thresholds.

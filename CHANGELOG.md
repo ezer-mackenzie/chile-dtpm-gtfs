@@ -4,6 +4,15 @@
 
 No changes yet.
 
+## 0.8.0 - 2026-10-23
+
+### Changed
+
+- Expanded the synthetic benchmark to measure loading, validation, selection, and
+  both exporters; documented reproducible, threshold-free performance checks.
+- Kept implementation streaming and avoided speculative optimizations because
+  generated-feed measurements did not identify an actionable bottleneck.
+
 ## 0.7.0 - 2026-10-23
 
 ### Added
