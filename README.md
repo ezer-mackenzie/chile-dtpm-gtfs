@@ -139,8 +139,9 @@ alongside archives when reproducibility matters.
 
 There is no stale-feed fallback or cache. Source layout changes raise explicit
 errors and may require a parser update. Missing calendars prevent date filtering
-when applicability cannot be determined. Advanced pathways/levels, frequency
-expansion, TopoJSON, and runtime JSON are deferred. Selecting large subsets can
+when applicability cannot be determined. TopoJSON and runtime-oriented data
+formats remain deferred. Pathways and levels, opt-in exact-time frequency
+expansion, and normalized JSON export are supported. Selecting large subsets can
 require substantial memory even though stop_times input is streamed. The source
 and format contracts are documented in the [architecture](docs/architecture.md).
 

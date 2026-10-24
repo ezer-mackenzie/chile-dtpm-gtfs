@@ -6,8 +6,8 @@ No changes yet.
 
 ## 1.0.0 - 2026-10-23
 
-First stable API milestone. This changelog entry and package metadata prepare a
-local release; the Git tag and PyPI/GitHub publication require separate approval.
+First stable API milestone. The version is tagged as `v1.0.0`; GitHub release and
+PyPI publication are separate actions and are not implied by this tag.
 
 ### Added
 

@@ -1,9 +1,10 @@
 # Releasing
 
-Package versions follow Semantic Versioning; this release preparation targets
-`1.0.0` and the corresponding Git tag is `v1.0.0`. Completing local checks and
-committing the release preparation does not create a tag or upload a package.
-All commit messages follow the conventions in AGENTS.md.
+Package versions follow Semantic Versioning. Version `1.0.0` is tagged as
+`v1.0.0`; this guide describes the process for preparing subsequent versions.
+Replace `X.Y.Z` below with the intended version. A commit or tag does not by itself
+create a GitHub release or upload a package. All commit messages follow the
+conventions in AGENTS.md.
 
 ## v1.0 API stability
 
@@ -21,8 +22,8 @@ behavior changes recorded in the changelog.
 3. Build the wheel and source distribution with `uv build` and run
    `uv run python scripts/check_distribution.py`.
 4. Commit a coherent release preparation change and inspect the final working tree.
-5. After explicit release approval, create an annotated tag:
-   `git tag -a v1.0.0 -m "Release v1.0.0"`.
+5. After explicit release approval, create an annotated tag for the prepared
+   version, for example: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`.
 
 Generated distributions live in dist/ and documentation HTML in site/. Neither is
 committed. To preview documentation, run

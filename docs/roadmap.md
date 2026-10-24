@@ -15,8 +15,9 @@
 6. CLI and release preparation: discovery/current/download/validate/export commands,
    Python compatibility checks, packaging, CI, documentation, and release workflow.
 
-Changes were implemented and verified in separate Conventional Commits. A local
-milestone/tag does not imply that a GitHub release or PyPI upload has occurred.
+Changes were implemented and verified in separate Conventional Commits. The
+repository has version tags through `v1.0.0`; a tag does not imply that a GitHub
+release or PyPI upload has occurred.
 
 ## Completed path to v1.0.0
 
@@ -24,7 +25,7 @@ The implemented milestones are recorded in order below. Each phase was kept as a
 separate, documented change with offline tests. The deferred work listed at the
 end is intentionally outside the v1.0.0 compatibility surface.
 
-### v0.2.0: actionable GTFS validation (implemented; release pending)
+### v0.2.0: actionable GTFS validation (implemented; tagged)
 
 - Extend validation beyond CSV structure and service-time syntax with useful,
   record-specific diagnostics for core GTFS fields and relationships.
@@ -34,7 +35,7 @@ end is intentionally outside the v1.0.0 compatibility surface.
   Avoid brittle wall-clock limits in cross-platform CI; investigate regressions
   against the same fixture and environment.
 
-### v0.3.0: publication applicability policy (implemented; release pending)
+### v0.3.0: publication applicability policy (implemented; tagged)
 
 - Support DTPM special-service or diversion applicability only when the source
   provides enough information for a deterministic result.
@@ -43,14 +44,14 @@ end is intentionally outside the v1.0.0 compatibility surface.
 - Cover normal, special, ambiguous, and future publication cases with local HTML
   fixtures and Santiago-date tests.
 
-### v0.4.0: documented mode selectors (implemented; release pending)
+### v0.4.0: documented mode selectors (implemented; tagged)
 
 - Add convenient bus and rail selectors using standard GTFS `route_type` values
   and the existing relationship-based selection pipeline.
 - Make classification boundaries explicit; do not classify modes by route or stop
   names, and keep the generic `select(route_types=...)` API available.
 
-### v0.5.0: opt-in frequency expansion (implemented; release pending)
+### v0.5.0: opt-in frequency expansion (implemented; tagged)
 
 - Add frequency-based trip expansion only behind an explicit API choice.
 - Define exact-time and headway behavior, date/calendar interaction, generated
@@ -60,7 +61,7 @@ end is intentionally outside the v1.0.0 compatibility surface.
   start-inclusive/end-exclusive, and bounded to 100,000 trips and 5,000,000
   generated stop-time records.
 
-### v0.6.0: station pathways and levels (implemented; release pending)
+### v0.6.0: station pathways and levels (implemented; tagged)
 
 - Normalize GTFS pathways and levels sufficiently to expose declared station
   connectivity and accessibility attributes.
@@ -68,13 +69,13 @@ end is intentionally outside the v1.0.0 compatibility surface.
   graph traversal separate and avoid inventing links, transfer times, or
   accessibility guarantees absent from source data.
 
-### v0.7.0: normalized JSON export (implemented; release pending)
+### v0.7.0: normalized JSON export (implemented; tagged)
 
 - Export the normalized domain model, not raw GTFS CSV rows.
 - Document a deterministic output shape, metadata/provenance treatment, and
   behavior for optional values; test round-trip JSON encoding and file writes.
 
-### v0.8.0: performance and usability hardening (implemented; release pending)
+### v0.8.0: performance and usability hardening (implemented; tagged)
 
 - Measure representative load, validation, selection, and export workflows on
   generated fixtures sized to expose memory or runtime problems.
@@ -85,7 +86,7 @@ end is intentionally outside the v1.0.0 compatibility surface.
 - Preserve streaming/resource ownership and use `scripts/benchmark_pipeline.py`
   for comparable measurements.
 
-### v0.9.0: release candidate and API review (implemented; release pending)
+### v0.9.0: release candidate and API review (implemented; tagged)
 
 - Review every public symbol, error, selector, report, and exporter for coherent
   naming, type annotations, lifecycle behavior, and documentation.
@@ -99,10 +100,10 @@ end is intentionally outside the v1.0.0 compatibility surface.
 
 ## v1.0.0 acceptance criteria
 
-The distribution is versioned as v1.0.0. Final local release checks passed on
-Windows/Python 3.14.7; the CI matrix covers Python 3.12-3.14 on Linux and Windows
-and must pass before an actual release. Creating a Git tag or publishing it
-remains a separate action requiring approval.
+The distribution is versioned and tagged as v1.0.0. Final local release checks
+passed on Windows/Python 3.14.7; the CI matrix covers Python 3.12-3.14 on Linux
+and Windows. The existing tag does not imply a GitHub release or PyPI publication;
+those remain separate actions requiring approval.
 
 The release is ready when all of the following hold:
 
@@ -122,8 +123,8 @@ The release is ready when all of the following hold:
    installed-distribution check all pass. Installation is tested outside the
    checkout and distribution contents exclude real feeds and test fixtures.
 7. README, API guides, changelog, package version, and release instructions agree
-   on the shipped behavior and version. A v1.0.0 tag or publication happens only
-   after explicit approval.
+   on the shipped behavior and version. The v1.0.0 tag exists; any GitHub release
+   or package publication happens only after explicit approval.
 
 These quality gates carry forward the reference library's emphasis on typed
 public APIs, strict static checking, multi-version testing, and user documentation.

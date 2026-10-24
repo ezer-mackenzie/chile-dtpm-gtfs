@@ -33,6 +33,7 @@ geometry. Shapes with fewer than two points cannot form a LineString and raise
 `write_geojson(path, overwrite=False)` requires an existing parent directory and
 writes UTF-8 JSON atomically. Existing output requires explicit `overwrite=True`.
 Failed writes do not replace the existing destination. JSON NaN/Infinity values
-are rejected. TopoJSON, runtime JSON, and per-collection exports are deferred.
+are rejected. TopoJSON and per-collection exports are deferred; see
+[normalized JSON](json.md) for the domain snapshot format.
 
 Format reference: [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946).
